@@ -37,6 +37,7 @@ public class Buscaminas extends Application {
         stage.initStyle(StageStyle.UNIFIED);
         stage.setResizable(false);
         stage.show();
+        System.out.println("");
     }
 
     /**
