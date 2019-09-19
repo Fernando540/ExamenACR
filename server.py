@@ -23,6 +23,13 @@ while True:
 	msg = data.decode("utf-8")
 	if(msg=="1"):
 		print("Principiante")
+		a=[-5]*9
+		for i in range(9):
+			a[i]= [-5]*9
+		for i in range(9):
+			for j in range(9):
+				print(a[i][j],end=' ')
+			print('\n')
 	else:
 		if(msg=="2"):
 			print("Intermedio")

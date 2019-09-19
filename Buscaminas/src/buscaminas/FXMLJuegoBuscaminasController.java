@@ -9,12 +9,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Observable;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -38,7 +36,6 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -602,8 +599,8 @@ public class FXMLJuegoBuscaminasController implements Initializable {
             }
         }
 
-        for (int k = 0; k < i; k++) {
-            for (int l = 0; l < j; l++) {
+        for (int k = 0; k < i; k++) {//fila
+            for (int l = 0; l < j; l++) {//col
                 if (tablero[k][l] != -1) {
                     if ((k > 0) && (l > 0)) {
                         if (tablero[k - 1][l - 1] == -1) {
