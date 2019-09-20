@@ -1,6 +1,68 @@
 import socket
 import struct
+from random import randrange
 
+def contarMinas(i,j,k,l,tablero):
+	#i,j: Dimensiones del tablero
+	#k,l: Posicion de celda
+	numMinas = 0
+	if ((k > 0) and (l > 0)):
+		if (tablero[k - 1][l - 1] == -1):
+			numMinas+=1
+	if (k > 0):
+		if (tablero[k - 1][l] == -1):
+			numMinas+=1
+	if ((k > 0) and (l < (j - 1))):
+		if (tablero[k - 1][l + 1] == -1):
+			numMinas+=1
+	if ((l < (j - 1))):
+		if (tablero[k][l + 1] == -1):
+			numMinas+=1
+	if ((l < (j - 1)) and (k < (i - 1))):
+		if (tablero[k + 1][l + 1] == -1):
+			numMinas+=1
+	if ((k < (i - 1))):
+		if (tablero[k + 1][l] == -1):
+			numMinas+=1
+	if ((l > 0) and (k < (i - 1))):
+		if (tablero[k + 1][l - 1] == -1):
+			numMinas+=1
+	if ((l > 0)):
+		if (tablero[k][l - 1] == -1):
+			numMinas+=1
+	tablero[k][l] = numMinas
+	return numMinas
+	
+
+def creaTablero(f,c):
+	arr=[-5]*f
+	for i in range(f):
+		arr[i]= [-5]*c
+
+	minas=10;
+	if(c==9): minas=10
+	if(c==16): minas=40
+	if(c==30): minas=99
+	print(f"Hay {minas} minas")
+	i = 0
+	while i < minas:#CICLO PARA COLOCAR MINAS
+		n = randrange(f)#filas
+		m = randrange(c)#filas
+		if(arr[n][m]== -5):
+			print(f"[{i+1}] Mina en posición ({n},{m})")
+			arr[n][m] = -1
+			i+=1
+
+	for i in range(len(arr)):
+		for j in range(len(arr[0])):
+			if(arr[i][j]!=-1):
+				arr[i][j] = contarMinas(f,c,i,j,arr)
+
+	return arr
+
+
+
+#---------------------------------------------------------------------------------
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 1234  		# Port to listen on (non-privileged ports are > 1023)
 
@@ -21,24 +83,36 @@ while True:
 	#num, = struct.unpack('<i',data)
 	#print(num)
 	msg = data.decode("utf-8")
-	if(msg=="1"):
-		print("Principiante")
-		a=[-5]*9
-		for i in range(9):
-			a[i]= [-5]*9
-		for i in range(9):
-			for j in range(9):
-				print(a[i][j],end=' ')
-			print('\n')
-	else:
-		if(msg=="2"):
-			print("Intermedio")
-		else:
-			print("Avanzado")
-
 	print(f"Mandaron: {msg}\nEnviando eco...")
 	ss.send(bytes(msg+'\n',"utf-8"))
 	print("OK!")
+
+	if(msg=="1"):
+		print("Principiante")
+		tablero=creaTablero(9,9)
+	else:
+		if(msg=="2"):
+			print("Intermedio")
+			tablero=creaTablero(16,16)
+		else:
+			print("Avanzado")
+			tablero=creaTablero(16,30)
+	
+	print("Enviando arreglo...")
+	for i in range(len(tablero)):
+		for j in range(len(tablero[0])):
+			ss.send(bytes(str(tablero[i][j])+'\n',"utf-8"))
+
+	print("OK!")
+	
+	
+	"""
+	for i in range(len(tablero)):
+		for j in range(len(tablero[0])):
+			print(tablero[i][j],end=' ')
+		print('\n')
+	"""
+
 	"""if(cadena == 'q'):
 		print("ADIOS!")
 		ss.send(bytes("Lost connection :'v"+'\n',"utf-8"))

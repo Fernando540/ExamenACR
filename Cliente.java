@@ -2,8 +2,6 @@
 
 import java.net.*;
 import java.io.*;
-import javax.swing.JFileChooser;
-import java.math.BigInteger;
 import java.util.Scanner;
 
 
@@ -28,13 +26,37 @@ public class Cliente {
         Scanner sc = new Scanner(System.in);
         String ent = sc.nextLine();//sc.nextLine();
         System.out.println("Enviaste: "+ent);
-        //BigInteger bigInt = BigInteger.valueOf(ent);      
-        //byte[] b = bigInt.toByteArray();
         writer.write(ent);
         writer.flush();
-        
         String svMsg = br.readLine();//sc.readLine();
         System.out.println("Server dice: "+svMsg);
+
+        int[][] tablero=null;
+        switch(ent){
+            case "1":
+                tablero= new int[9][9];
+                break;
+            case "2":
+                tablero= new int[16][16];
+                break;
+            case "3":
+                tablero= new int[16][30];
+                break;
+        }
+
+        for(int i=0;i<tablero.length;i++){
+            for(int j=0;j<tablero[0].length;j++){
+                int a = Integer.parseInt(br.readLine());//sc.readLine();
+                tablero[i][j]=a;
+                if(a!=-1)
+                    System.out.print(a+" ");
+                else
+                    System.out.print("# ");
+            }
+            System.out.println("");
+        }
+        
+        
         
         /*try {
             int input = Integer.parseInt(hola);
