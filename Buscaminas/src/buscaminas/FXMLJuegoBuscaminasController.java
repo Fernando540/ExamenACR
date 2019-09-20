@@ -566,14 +566,6 @@ public class FXMLJuegoBuscaminasController implements Initializable {
             }
         }
         
-        for (int i = 0; i < celdas.size(); i++) {
-            if((i>=8)&&(i%10 == 0)){
-                System.out.print("\n  "+((Mina)(celdas.get(i).getUserData())).getTipo());
-            }else
-                System.out.print("  "+((Mina)(celdas.get(i).getUserData())).getTipo());
-        }
-        
-//gridPaneTablero.setAlignment(Pos.CENTER);
         gridPaneTablero.setLayoutX(10);
         gridPaneTablero.setLayoutY(10);
         hBox = new HBox();
@@ -596,7 +588,6 @@ public class FXMLJuegoBuscaminasController implements Initializable {
     
     public void vacioRecursivo(int n, int m,int totalX, int totalY){
         int i=n,j=m;
-        System.out.println("Estoy en ["+i+"]["+j+"]");
         if (tablero[i][j] != -1) {
             try{
                 if (tablero[i - 1][j - 1] == 0) {
@@ -800,7 +791,6 @@ public class FXMLJuegoBuscaminasController implements Initializable {
             }
 
             try{
-                System.out.println("Estoy en ["+j+"]>0");
                 if (tablero[i][j - 1] == 0) {
                     Button btn = celdas.get((i)*totalY+((j-1)));
                     if(!celdasPresionadas.contains(btn)){
