@@ -598,8 +598,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
         int i=n,j=m;
         System.out.println("Estoy en ["+i+"]["+j+"]");
         if (tablero[i][j] != -1) {
-            if ((i > 0) && (j > 0)) {
-                System.out.println("Estoy en ["+i+"]>0,["+j+"]>0");
+            try{
                 if (tablero[i - 1][j - 1] == 0) {
                     Button btn = celdas.get((i-1)*totalY+((j-1)));
                     if(!celdasPresionadas.contains(btn)){
@@ -624,9 +623,11 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                         }
                     }
                 }
+            }catch(ArrayIndexOutOfBoundsException e){
+                
             }
-            if (i > 0) {
-                System.out.println("Estoy en ["+i+"]>0");
+            
+            try{
                 if (tablero[i - 1][j] == 0){
                     Button btn = celdas.get((i-1)*totalY+((j)));
                     if(!celdasPresionadas.contains(btn)){
@@ -651,10 +652,11 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                         }
                     }
                 }
+            }catch(ArrayIndexOutOfBoundsException e){
+                
             }
 
-            if ((i > 0) && (j < (totalY))) {
-                System.out.println("Estoy en ["+i+"]>0,["+j+"]<["+totalY+"]");
+            try{
                 if (tablero[i - 1][j + 1] == 0) {
                     Button btn = celdas.get((i-1)*totalY+((j+1)));
                     if(!celdasPresionadas.contains(btn)){
@@ -679,10 +681,11 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                         }
                     }
                 }
+            }catch(ArrayIndexOutOfBoundsException e){
+                
             }
 
-            if ((j < (totalY))) {
-                System.out.println("Estoy en ["+j+"]<["+totalY+"]");
+            try{
                 if (tablero[i][j + 1] == 0) {
                     Button btn = celdas.get((i)*totalY+((j+1)));
                     if(!celdasPresionadas.contains(btn)){
@@ -707,10 +710,11 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                         }
                     }
                 }
+            }catch(ArrayIndexOutOfBoundsException e){
+                
             }
             
-            if ((j < (totalY)) && (i < (totalX))) {
-                System.out.println("Estoy en ["+i+"]<"+totalX+",["+j+"]<["+totalY+"]");
+            try{
                 if (tablero[i + 1][j + 1] == 0) {
                     Button btn = celdas.get((i+1)*totalY+((j+1)));
                     if(!celdasPresionadas.contains(btn)){
@@ -734,11 +738,14 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                             stageTablero.close();
                         }
                     }
-                }
+                }                
+            }catch(ArrayIndexOutOfBoundsException e){
+                
             }
 
-            if ((i < (totalX))) {
-                System.out.println("Estoy en ["+i+"]<"+totalX+"]");
+            
+
+            try{
                 if (tablero[i + 1][j] == 0) {
                     Button btn = celdas.get((i+1)*totalY+((j)));
                     if(!celdasPresionadas.contains(btn)){
@@ -761,10 +768,11 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                         }
                     }
                 }
+            }catch(ArrayIndexOutOfBoundsException e){
+                
             }
 
-            if ((j > 0) && (i < (totalX))) {
-                System.out.println("Estoy en ["+i+"]<"+totalX+",["+j+"]>0");
+            try{
                 if (tablero[i + 1][j - 1] == 0) {
                     Button btn = celdas.get((i+1)*totalY+((j-1)));
                     if(!celdasPresionadas.contains(btn)){
@@ -787,9 +795,11 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                         }
                     }
                 }
+            }catch(ArrayIndexOutOfBoundsException e){
+                
             }
 
-            if ((j > 0)) {
+            try{
                 System.out.println("Estoy en ["+j+"]>0");
                 if (tablero[i][j - 1] == 0) {
                     Button btn = celdas.get((i)*totalY+((j-1)));
@@ -813,6 +823,8 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                         }
                     }
                 }
+            }catch(ArrayIndexOutOfBoundsException e){
+                
             }
         }
         return;
