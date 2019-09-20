@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package buscaminas;
 
 import java.io.IOException;
@@ -48,7 +43,7 @@ import javafx.stage.WindowEvent;
 /**
  * FXML Controller class
  *
- * @author nahomi
+ * @author nahomi, ferna
  */
 public class FXMLJuegoBuscaminasController implements Initializable {
     
