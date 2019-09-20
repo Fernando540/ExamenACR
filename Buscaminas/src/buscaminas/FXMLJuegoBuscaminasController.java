@@ -69,6 +69,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
     private ArrayList<Button> banderasColocadas = new ArrayList<>();
     private int totalCeldas;
     private int totalMinas;
+    private int filas=0,columnas=0;
 
     /**
      * Initializes the controller class.
@@ -80,7 +81,6 @@ public class FXMLJuegoBuscaminasController implements Initializable {
 
     @FXML
     public void empezar(ActionEvent e) {
-        int filas=0,columnas=0;
         gridPaneTablero = new GridPane();
         gridPaneTablero.setVgap(1);
         gridPaneTablero.setHgap(1);
@@ -90,6 +90,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
         stageTablero = ((Stage) anchorPaneTablero.getScene().getWindow());
         stageTablero.centerOnScreen();
         Usuario jugador = (Usuario) (stageTablero.getUserData());
+        
         stageTablero.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
@@ -116,18 +117,25 @@ public class FXMLJuegoBuscaminasController implements Initializable {
             totalMinas = 40;
         } else if (jugador.getDificultad().equals("Experto")) {
             System.out.println("Se ha iniciado el modo experto");
-            filas = 30;
-            columnas = 16;
+            filas = 16;
+            columnas = 30;
             totalMinas = 99;
         }
         
         tablero = crearTablero(filas, columnas);
-        totalCeldas = (filas*columnas)-totalMinas;
-        stageTablero.setWidth((31 * filas) + 25);
-        stageTablero.setHeight((31 * columnas) + 70);
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                System.out.print("  "+tablero[i][j]);
+            }
+            System.out.println("");
+        }
         
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
+        totalCeldas = (filas*columnas)-totalMinas;
+        stageTablero.setWidth((31 * columnas) + 25);
+        stageTablero.setHeight((31 * filas) + 70);
+        
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
                 Button boton = new Button();
                 boton.setAlignment(Pos.CENTER);
                 boton.setPrefSize(30, 30);
@@ -135,6 +143,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 GridPane.setHalignment(boton, HPos.CENTER);
                 GridPane.setMargin(boton, new Insets(0));
                 Image icono = new Image("images/celda.png");
+                
                 if (tablero[i][j] == -1) {
                     //Image icono = new Image("images/mina.jpg");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -143,39 +152,39 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                         public void handle(MouseEvent event) {
                             if (event.getButton() == MouseButton.PRIMARY) {
                                 String time = timer.getTime();
-                                timer.stopTimer();
+                                String tiempoParo = timer.stopTimer();
                                 Image icono2 = new Image("images/minaExplota.jpg");
                                 boton.setBackground(new Background(new BackgroundImage(icono2, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 for (Button buton : celdas) {
                                     if (!boton.equals(buton)) {
-                                        if (((String) buton.getUserData()).equals("-1")) {
+                                        if (((Mina)buton.getUserData()).getTipo().equals("images/mina.png")) {
                                             Image icono = new Image("images/mina.jpg");
                                             buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        } else if (((String) buton.getUserData()).equals("0")) {
+                                        } else if (((Mina) buton.getUserData()).getTipo().equals("images/vacio.png")) {
                                             Image icono = new Image("images/vacio.png");
                                             buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        } else if (((String) buton.getUserData()).equals("1")) {
+                                        } else if (((Mina) buton.getUserData()).getTipo().equals("images/uno.png")) {
                                             Image icono = new Image("images/uno.png");
                                             buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        } else if (((String) buton.getUserData()).equals("2")) {
+                                        } else if (((Mina) buton.getUserData()).getTipo().equals("images/dos.png")) {
                                             Image icono = new Image("images/dos.png");
                                             buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        } else if (((String) buton.getUserData()).equals("3")) {
+                                        } else if (((Mina) buton.getUserData()).getTipo().equals("images/tres.png")) {
                                             Image icono = new Image("images/tres.png");
                                             buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        } else if (((String) buton.getUserData()).equals("4")) {
+                                        } else if (((Mina) buton.getUserData()).getTipo().equals("images/cuatro.png")) {
                                             Image icono = new Image("images/cuatro.png");
                                             buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        } else if (((String) buton.getUserData()).equals("5")) {
+                                        } else if (((Mina) buton.getUserData()).getTipo().equals("images/cinco.png")) {
                                             Image icono = new Image("images/cinco.png");
                                             buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        } else if (((String) buton.getUserData()).equals("6")) {
+                                        } else if (((Mina) buton.getUserData()).getTipo().equals("images/seis.png")) {
                                             Image icono = new Image("images/seis.png");
                                             buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        } else if (((String) buton.getUserData()).equals("7")) {
+                                        } else if (((Mina) buton.getUserData()).getTipo().equals("images/siete.png")) {
                                             Image icono = new Image("images/siete.png");
                                             buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        } else if (((String) buton.getUserData()).equals("8")) {
+                                        } else if (((Mina) buton.getUserData()).getTipo().equals("images/ocho.png")) {
                                             Image icono = new Image("images/ocho.png");
                                             buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                         } else {
@@ -190,7 +199,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 alert.setHeaderText("Suerte para la próxima. A continuación se muestra tu resultado");
                                 alert.setContentText("Eres una basura :v\nTu tiempo fue de: "+time);
                                 alert.showAndWait();
-                                finalizarJuego();
+                                finalizarJuego(false,tiempoParo);
                             } else if (event.getButton() == MouseButton.SECONDARY) {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
@@ -198,21 +207,24 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
                                         stageTablero.close();
                                     }
+                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                    banderasColocadas.remove(boton);
+                                    Image icono = new Image("images/celda.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 }
                             }
                         }
                     });
-                    Mina mina = new Mina(i,j,"-1");
-                    boton.setUserData(mina);
+                    boton.setUserData(new Mina(i,j,"images/mina.png",-1));
                     celdas.add(boton);
-                    gridPaneTablero.add(boton, i, j);
+                    gridPaneTablero.add(boton, j, i);
                 } else if (tablero[i][j] == 0) {
                     //Image icono = new Image("images/vacio.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    Mina mina = new Mina(i,j,"0");
-                    boton.setUserData(mina);
+                    boton.setUserData(new Mina(i,j,"images/vacio.png",0));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -223,24 +235,36 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
                                         stageTablero.close();
+                                    }else{
+                                        vacioRecursivo(((Mina)boton.getUserData()).getPosicionX(),((Mina)boton.getUserData()).getPosicionY(), filas, columnas);
                                     }
                                 }
                             } else if (event.getButton() == MouseButton.SECONDARY) {
-                                if(!celdasPresionadas.contains(boton)){
+                                if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
-                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    banderasColocadas.add(boton);
+                                    if (banderasColocadas.size() == totalMinas) {
+                                        System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
+                                        stageTablero.close();
+                                    }
+                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                    banderasColocadas.remove(boton);
+                                    Image icono = new Image("images/celda.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 }
                             }
                         }
                     });
                     celdas.add(boton);
-                    gridPaneTablero.add(boton, i, j);
+                    gridPaneTablero.add(boton, j, i);
                 } else if (tablero[i][j] == 1) {
                     //Image icono = new Image("images/uno.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    Mina mina = new Mina(i,j,"1");
-                    boton.setUserData(mina);
+                    boton.setUserData(new Mina(i,j,"images/uno.png",1));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -251,24 +275,34 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
                             } else if (event.getButton() == MouseButton.SECONDARY) {
-                                if(!celdasPresionadas.contains(boton)){
+                                if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
-                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    banderasColocadas.add(boton);
+                                    if (banderasColocadas.size() == totalMinas) {
+                                        System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
+                                        stageTablero.close();
+                                    }
+                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                    banderasColocadas.remove(boton);
+                                    Image icono = new Image("images/celda.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 }
                             }
                         }
                     });
                     celdas.add(boton);
-                    gridPaneTablero.add(boton, i, j);
+                    gridPaneTablero.add(boton, j, i);
                 } else if (tablero[i][j] == 2) {
                     //Image icono = new Image("images/dos.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    Mina mina = new Mina(i,j,"2");
-                    boton.setUserData(mina);
+                    boton.setUserData(new Mina(i,j,"images/dos.png",2));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -279,24 +313,34 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
                             } else if (event.getButton() == MouseButton.SECONDARY) {
-                                if(!celdasPresionadas.contains(boton)){
+                                if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
-                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    banderasColocadas.add(boton);
+                                    if (banderasColocadas.size() == totalMinas) {
+                                        System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
+                                        stageTablero.close();
+                                    }
+                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                    banderasColocadas.remove(boton);
+                                    Image icono = new Image("images/celda.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 }
                             }
                         }
                     });
                     celdas.add(boton);
-                    gridPaneTablero.add(boton, i, j);
+                    gridPaneTablero.add(boton, j, i);
                 } else if (tablero[i][j] == 3) {
                     //Image icono = new Image("images/tres.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    Mina mina = new Mina(i,j,"3");
-                    boton.setUserData(mina);
+                    boton.setUserData(new Mina(i,j,"images/tres.png",3));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -307,24 +351,34 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
                             } else if (event.getButton() == MouseButton.SECONDARY) {
-                                if(!celdasPresionadas.contains(boton)){
+                                if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
-                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    banderasColocadas.add(boton);
+                                    if (banderasColocadas.size() == totalMinas) {
+                                        System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
+                                        stageTablero.close();
+                                    }
+                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                    banderasColocadas.remove(boton);
+                                    Image icono = new Image("images/celda.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 }
                             }
                         }
                     });
                     celdas.add(boton);
-                    gridPaneTablero.add(boton, i, j);
+                    gridPaneTablero.add(boton, j, i);
                 } else if (tablero[i][j] == 4) {
                     //Image icono = new Image("images/cuatro.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    Mina mina = new Mina(i,j,"4");
-                    boton.setUserData(mina);
+                    boton.setUserData(new Mina(i,j,"images/cuatro.png",4));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -335,24 +389,34 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
                             } else if (event.getButton() == MouseButton.SECONDARY) {
-                                if(!celdasPresionadas.contains(boton)){
+                                if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
-                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    banderasColocadas.add(boton);
+                                    if (banderasColocadas.size() == totalMinas) {
+                                        System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
+                                        stageTablero.close();
+                                    }
+                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                    banderasColocadas.remove(boton);
+                                    Image icono = new Image("images/celda.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 }
                             }
                         }
                     });
                     celdas.add(boton);
-                    gridPaneTablero.add(boton, i, j);
+                    gridPaneTablero.add(boton, j, i);
                 } else if (tablero[i][j] == 5) {
                     //Image icono = new Image("images/cinco.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    Mina mina = new Mina(i,j,"5");
-                    boton.setUserData(mina);
+                    boton.setUserData(new Mina(i,j,"images/cinco.png",5));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -363,24 +427,34 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
                             } else if (event.getButton() == MouseButton.SECONDARY) {
-                                if(!celdasPresionadas.contains(boton)){
+                                if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
-                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    banderasColocadas.add(boton);
+                                    if (banderasColocadas.size() == totalMinas) {
+                                        System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
+                                        stageTablero.close();
+                                    }
+                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                    banderasColocadas.remove(boton);
+                                    Image icono = new Image("images/celda.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 }
                             }
                         }
                     });
                     celdas.add(boton);
-                    gridPaneTablero.add(boton, i, j);
+                    gridPaneTablero.add(boton, j, i);
                 } else if (tablero[i][j] == 6) {
                     //Image icono = new Image("images/seis.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    Mina mina = new Mina(i,j,"6");
-                    boton.setUserData(mina);
+                    boton.setUserData(new Mina(i,j,"images/seis.png",6));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -391,24 +465,34 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
                             } else if (event.getButton() == MouseButton.SECONDARY) {
-                                if(!celdasPresionadas.contains(boton)){
+                                if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
-                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    banderasColocadas.add(boton);
+                                    if (banderasColocadas.size() == totalMinas) {
+                                        System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
+                                        stageTablero.close();
+                                    }
+                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                    banderasColocadas.remove(boton);
+                                    Image icono = new Image("images/celda.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 }
                             }
                         }
                     });
                     celdas.add(boton);
-                    gridPaneTablero.add(boton, i, j);
+                    gridPaneTablero.add(boton, j, i);
                 } else if (tablero[i][j] == 7) {
                     //Image icono = new Image("images/siete.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    Mina mina = new Mina(i,j,"7");
-                    boton.setUserData(mina);
+                    boton.setUserData(new Mina(i,j,"images/siete.png",7));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -419,24 +503,34 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
                             } else if (event.getButton() == MouseButton.SECONDARY) {
-                                if(!celdasPresionadas.contains(boton)){
+                                if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
-                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    banderasColocadas.add(boton);
+                                    if (banderasColocadas.size() == totalMinas) {
+                                        System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
+                                        stageTablero.close();
+                                    }
+                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                    banderasColocadas.remove(boton);
+                                    Image icono = new Image("images/celda.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 }
                             }
                         }
                     });
                     celdas.add(boton);
-                    gridPaneTablero.add(boton, i, j);
+                    gridPaneTablero.add(boton, j, i);
                 } else if (tablero[i][j] == 8) {
                     //Image icono = new Image("images/ocho.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    Mina mina = new Mina(i,j,"8");
-                    boton.setUserData(mina);
+                    boton.setUserData(new Mina(i,j,"images/ocho.png",8));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -447,25 +541,44 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
                             } else if (event.getButton() == MouseButton.SECONDARY) {
-                                if(!celdasPresionadas.contains(boton)){
+                                if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
-                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    banderasColocadas.add(boton);
+                                    if (banderasColocadas.size() == totalMinas) {
+                                        System.out.println("GANASTEEEE");
+                                        finalizarJuego(true,timer.stopTimer());
+                                        stageTablero.close();
+                                    }
+                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                    banderasColocadas.remove(boton);
+                                    Image icono = new Image("images/celda.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 }
                             }
                         }
                     });
                     celdas.add(boton);
-                    gridPaneTablero.add(boton, i, j);
+                    gridPaneTablero.add(boton, j, i);
                 } else {
                     System.err.println("Error en el tablero");
                 }
             }
         }
-        //gridPaneTablero.setAlignment(Pos.CENTER);
+        
+        for (int i = 0; i < celdas.size(); i++) {
+            if((i>=8)&&(i%10 == 0)){
+                System.out.print("\n  "+((Mina)(celdas.get(i).getUserData())).getTipo());
+            }else
+                System.out.print("  "+((Mina)(celdas.get(i).getUserData())).getTipo());
+        }
+        
+//gridPaneTablero.setAlignment(Pos.CENTER);
         gridPaneTablero.setLayoutX(10);
         gridPaneTablero.setLayoutY(10);
         hBox = new HBox();
@@ -488,57 +601,222 @@ public class FXMLJuegoBuscaminasController implements Initializable {
     
     public void vacioRecursivo(int n, int m,int totalX, int totalY){
         int i=n,j=m;
+        System.out.println("Estoy en ["+i+"]["+j+"]");
         if (tablero[i][j] != -1) {
             if ((i > 0) && (j > 0)) {
+                System.out.println("Estoy en ["+i+"]>0,["+j+"]>0");
                 if (tablero[i - 1][j - 1] == 0) {
-                    Button btn = celdas.get((i)*totalY+(j+1));
+                    Button btn = celdas.get((i-1)*totalY+((j-1)));
                     if(!celdasPresionadas.contains(btn)){
-                        Image icono = new Image("images/vacio.jpg");
+                        Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        celdasPresionadas.add(celdas.get((i)*totalY+(j+1)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                            stageTablero.close();
+                        }
                         vacioRecursivo(i-1,j-1,totalX,totalY);
                     }
                 }else if((tablero[i - 1][j - 1] != 0)&&(tablero[i - 1][j - 1] != -1)){
-                    Button btn = celdas.get((i)*totalY+(j+1));
+                    Button btn = celdas.get((i-1)*totalY+((j-1)));
                     if(!celdasPresionadas.contains(btn)){
-                        Image icono = new Image("images/"+((Mina)btn.getUserData()).tipo+".jpg");
+                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        celdasPresionadas.add(celdas.get((i)*totalY+(j+1)));
-                        vacioRecursivo(i-1,j-1,totalX,totalY);
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                            stageTablero.close();
+                        }
                     }
                 }
             }
             if (i > 0) {
-                if (tablero[i - 1][j] == -1) {
+                System.out.println("Estoy en ["+i+"]>0");
+                if (tablero[i - 1][j] == 0){
+                    Button btn = celdas.get((i-1)*totalY+((j)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image("images/vacio.png");
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                            stageTablero.close();
+                        }
+                        vacioRecursivo(i-1,j,totalX,totalY);
+                    }
+                }else if((tablero[i - 1][j] != 0)&&(tablero[i - 1][j] != -1)){
+                    Button btn = celdas.get((i-1)*totalY+((j)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                            stageTablero.close();
+                        }
+                    }
                 }
             }
 
-            if ((i > 0) && (j < (totalY - 1))) {
-                if (tablero[i - 1][j + 1] == -1) {
+            if ((i > 0) && (j < (totalY))) {
+                System.out.println("Estoy en ["+i+"]>0,["+j+"]<["+totalY+"]");
+                if (tablero[i - 1][j + 1] == 0) {
+                    Button btn = celdas.get((i-1)*totalY+((j+1)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image("images/vacio.png");
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                            stageTablero.close();
+                        }
+                        vacioRecursivo(i-1,j+1,totalX,totalY);
+                    }
+                }else if((tablero[i - 1][j+1] != 0)&&(tablero[i - 1][j+1] != -1)){
+                    Button btn = celdas.get(((i-1)*totalY+((j+1))));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                            stageTablero.close();
+                        }
+                    }
                 }
             }
 
-            if ((j < (totalY - 1))) {
-                if (tablero[i][j + 1] == -1) {
+            if ((j < (totalY))) {
+                System.out.println("Estoy en ["+j+"]<["+totalY+"]");
+                if (tablero[i][j + 1] == 0) {
+                    Button btn = celdas.get((i)*totalY+((j+1)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image("images/vacio.png");
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                            stageTablero.close();
+                        }
+                        vacioRecursivo(i,j+1,totalX,totalY);
+                    }
+                }else if((tablero[i][j+1] != 0)&&(tablero[i][j+1] != -1)){
+                    Button btn = celdas.get((i)*totalY+((j+1)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                            stageTablero.close();
+                        }
+                    }
                 }
             }
-            if ((j < (totalY - 1)) && (i < (totalX - 1))) {
-                if (tablero[i + 1][j + 1] == -1) {
+            
+            if ((j < (totalY)) && (i < (totalX))) {
+                System.out.println("Estoy en ["+i+"]<"+totalX+",["+j+"]<["+totalY+"]");
+                if (tablero[i + 1][j + 1] == 0) {
+                    Button btn = celdas.get((i+1)*totalY+((j+1)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image("images/vacio.png");
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                            stageTablero.close();
+                        }
+                        vacioRecursivo(i+1,j+1,totalX,totalY);
+                    }
+                }else if((tablero[i+1][j+1] != 0)&&(tablero[i+1][j+1] != -1)){
+                    Button btn = celdas.get((i+1)*totalY+((j+1)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                            stageTablero.close();
+                        }
+                    }
                 }
             }
 
-            if ((i < (totalX - 1))) {
-                if (tablero[i + 1][j] == -1) {
+            if ((i < (totalX))) {
+                System.out.println("Estoy en ["+i+"]<"+totalX+"]");
+                if (tablero[i + 1][j] == 0) {
+                    Button btn = celdas.get((i+1)*totalY+((j)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image("images/vacio.png");
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                        }
+                        vacioRecursivo(i+1,j,totalX,totalY);
+                    }
+                }else if((tablero[i+1][j] != 0)&&(tablero[i+1][j] != -1)){
+                    Button btn = celdas.get((i+1)*totalY+((j)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                        }
+                    }
                 }
             }
 
-            if ((j > 0) && (i < (totalX - 1))) {
-                if (tablero[i + 1][j - 1] == -1) {
+            if ((j > 0) && (i < (totalX))) {
+                System.out.println("Estoy en ["+i+"]<"+totalX+",["+j+"]>0");
+                if (tablero[i + 1][j - 1] == 0) {
+                    Button btn = celdas.get((i+1)*totalY+((j-1)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image("images/vacio.png");
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                        }
+                        vacioRecursivo(i+1,j-1,totalX,totalY);
+                    }
+                }else if((tablero[i+1][j-1] != 0)&&(tablero[i+1][j-1] != -1)){
+                    Button btn = celdas.get((i+1)*totalY+((j-1)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                        }
+                    }
                 }
             }
 
             if ((j > 0)) {
-                if (tablero[i][j - 1] == -1) {
+                System.out.println("Estoy en ["+j+"]>0");
+                if (tablero[i][j - 1] == 0) {
+                    Button btn = celdas.get((i)*totalY+((j-1)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image("images/vacio.png");
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                        }
+                        vacioRecursivo(i,j-1,totalX,totalY);
+                    }
+                }else if((tablero[i][j-1] != 0)&&(tablero[i][j-1] != -1)){
+                    Button btn = celdas.get((i)*totalY+((j-1)));
+                    if(!celdasPresionadas.contains(btn)){
+                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        celdasPresionadas.add(btn);
+                        if(celdasPresionadas.size() == totalCeldas){
+                            finalizarJuego(true,timer.stopTimer());
+                        }
+                    }
                 }
             }
         }
@@ -621,39 +899,75 @@ public class FXMLJuegoBuscaminasController implements Initializable {
         return tablero;
     }
 
-    public void finalizarJuego() {
-        Label labelGameOver = new Label("Game Over");
-        labelGameOver.setFont(new Font("Bauhaus 93", 32));
-        labelGameOver.setTextFill(Paint.valueOf("BLACK"));
-        labelGameOver.setBackground(new Background(new BackgroundImage(new Image("images/gamOver.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-        Scene sceneGameOver = new Scene(labelGameOver);
-        Stage stageGameOver = new Stage();
-        stageGameOver.setScene(sceneGameOver);
-        stageGameOver.setTitle("Buscaminas");
-        stageGameOver.centerOnScreen();
-        Image icono3 = new Image("images/titleBuscIcon.png");
-        stageGameOver.getIcons().add(icono3);
-        stageGameOver.initStyle(StageStyle.UNIFIED);
-        stageGameOver.setResizable(false);
-        stageGameOver.show();
-        try {
-            Thread.sleep(3 * 1000);
-        } catch (InterruptedException ex) {
-        }
-        stageGameOver.close();
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
-            Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle("Buscaminas");
-            stage.centerOnScreen();
-            stage.getIcons().add(icono3);
-            stage.initStyle(StageStyle.UNIFIED);
-            stage.setResizable(false);
-            stage.show();
-        } catch (IOException ex) {
-            Logger.getLogger(FXMLJuegoBuscaminasController.class.getName()).log(Level.SEVERE, null, ex);
+    public void finalizarJuego(boolean isWinner, String tiempo) {
+        if(isWinner){
+            Label labelGameOver = new Label("¡Winner! en "+tiempo);
+            labelGameOver.setFont(new Font("Bauhaus 93", 32));
+            labelGameOver.setTextFill(Paint.valueOf("BLACK"));
+            labelGameOver.setBackground(new Background(new BackgroundImage(new Image("images/gamOver.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+            Scene sceneGameOver = new Scene(labelGameOver);
+            Stage stageGameOver = new Stage();
+            stageGameOver.setScene(sceneGameOver);
+            stageGameOver.setTitle("Buscaminas");
+            stageGameOver.centerOnScreen();
+            Image icono3 = new Image("images/titleBuscIcon.png");
+            stageGameOver.getIcons().add(icono3);
+            stageGameOver.initStyle(StageStyle.UNIFIED);
+            stageGameOver.setResizable(false);
+            stageGameOver.show();
+            try {
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException ex) {
+            }
+            stageGameOver.close();
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+                Scene scene = new Scene(root);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setTitle("Buscaminas");
+                stage.centerOnScreen();
+                stage.getIcons().add(icono3);
+                stage.initStyle(StageStyle.UNIFIED);
+                stage.setResizable(false);
+                stage.show();
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLJuegoBuscaminasController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            Label labelGameOver = new Label("Game Over en "+tiempo);
+            labelGameOver.setFont(new Font("Bauhaus 93", 32));
+            labelGameOver.setTextFill(Paint.valueOf("BLACK"));
+            labelGameOver.setBackground(new Background(new BackgroundImage(new Image("images/gamOver.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+            Scene sceneGameOver = new Scene(labelGameOver);
+            Stage stageGameOver = new Stage();
+            stageGameOver.setScene(sceneGameOver);
+            stageGameOver.setTitle("Buscaminas");
+            stageGameOver.centerOnScreen();
+            Image icono3 = new Image("images/titleBuscIcon.png");
+            stageGameOver.getIcons().add(icono3);
+            stageGameOver.initStyle(StageStyle.UNIFIED);
+            stageGameOver.setResizable(false);
+            stageGameOver.show();
+            try {
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException ex) {
+            }
+            stageGameOver.close();
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+                Scene scene = new Scene(root);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setTitle("Buscaminas");
+                stage.centerOnScreen();
+                stage.getIcons().add(icono3);
+                stage.initStyle(StageStyle.UNIFIED);
+                stage.setResizable(false);
+                stage.show();
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLJuegoBuscaminasController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         ((Stage) anchorPaneTablero.getScene().getWindow()).close();
     }

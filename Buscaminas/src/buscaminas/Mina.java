@@ -10,14 +10,16 @@ package buscaminas;
  * @author nahomi
  */
 public class Mina {
-    int posicionX;
-    int posicionY;
-    String tipo;
+    private int posicionX;
+    private int posicionY;
+    private String tipo;
+    private int tipoInt;
 
-    public Mina(int posicionX, int posicionY, String tipo) {
+    public Mina(int posicionX, int posicionY, String tipo, int tipoInt) {
         this.posicionX = posicionX;
         this.posicionY = posicionY;
         this.tipo = tipo;
+        this.tipoInt = tipoInt;
     }
 
     public int getPosicionX() {
@@ -43,5 +45,14 @@ public class Mina {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
+
+    public int getTipoInt() {
+        return tipoInt;
+    }
+
+    public void setTipoInt(int tipoInt) {
+        this.tipoInt = tipoInt;
+    }
+    
     
 }

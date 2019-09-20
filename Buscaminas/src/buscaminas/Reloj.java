@@ -45,10 +45,11 @@ public class Reloj extends Thread {
         thread.start();
     }
 
-    public void stopTimer() {
+    public String stopTimer() {
         if (thread != null) {
             thread.interrupt();
         }
+        return sTime;
     }
 
     public void setTime() {
