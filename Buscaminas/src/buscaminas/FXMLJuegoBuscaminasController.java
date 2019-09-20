@@ -51,7 +51,7 @@ import javafx.stage.WindowEvent;
  * @author nahomi
  */
 public class FXMLJuegoBuscaminasController implements Initializable {
-
+    
     @FXML
     private AnchorPane anchorPaneTablero;
     @FXML
@@ -80,6 +80,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
 
     @FXML
     public void empezar(ActionEvent e) {
+        int filas=0,columnas=0;
         gridPaneTablero = new GridPane();
         gridPaneTablero.setVgap(1);
         gridPaneTablero.setHgap(1);
@@ -97,477 +98,372 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 System.exit(0);
             }
         });
+        
         System.out.println("Ha ingresado el jugador");
         System.out.println(jugador.getNombre());
         System.out.println(jugador.getDificultad());
         System.out.println(jugador.getInicioT().toString());
+        
         if (jugador.getDificultad().equals("Principiante")) {
             System.out.println("Se ha iniciado el modo principiante");
-            totalCeldas = 71;
+            filas = 9;
+            columnas = 9;
             totalMinas = 10;
-            tablero = crearTablero(9, 9);
-            stageTablero.setWidth((31 * 9) + 25);
-            stageTablero.setHeight((31 * 9) + 70);
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    Button boton = new Button();
-                    boton.setAlignment(Pos.CENTER);
-                    boton.setPrefSize(30, 30);
-                    boton.setPadding(new Insets(0));
-                    GridPane.setHalignment(boton, HPos.CENTER);
-                    GridPane.setMargin(boton, new Insets(0));
-                    Image icono = new Image("images/celda.png");
-                    if (tablero[i][j] == -1) {
-                        //Image icono = new Image("images/mina.jpg");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                if (event.getButton() == MouseButton.PRIMARY) {
-                                    String time = timer.getTime();
-                                    timer.stopTimer();
-                                    Image icono2 = new Image("images/minaExplota.jpg");
-                                    boton.setBackground(new Background(new BackgroundImage(icono2, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    for (Button buton : celdas) {
-                                        if (!boton.equals(buton)) {
-                                            if (((String) buton.getUserData()).equals("-1")) {
-                                                Image icono = new Image("images/mina.jpg");
-                                                buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                            } else if (((String) buton.getUserData()).equals("0")) {
-                                                Image icono = new Image("images/vacio.png");
-                                                buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                            } else if (((String) buton.getUserData()).equals("1")) {
-                                                Image icono = new Image("images/uno.png");
-                                                buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                            } else if (((String) buton.getUserData()).equals("2")) {
-                                                Image icono = new Image("images/dos.png");
-                                                buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                            } else if (((String) buton.getUserData()).equals("3")) {
-                                                Image icono = new Image("images/tres.png");
-                                                buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                            } else if (((String) buton.getUserData()).equals("4")) {
-                                                Image icono = new Image("images/cuatro.png");
-                                                buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                            } else if (((String) buton.getUserData()).equals("5")) {
-                                                Image icono = new Image("images/cinco.png");
-                                                buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                            } else if (((String) buton.getUserData()).equals("6")) {
-                                                Image icono = new Image("images/seis.png");
-                                                buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                            } else if (((String) buton.getUserData()).equals("7")) {
-                                                Image icono = new Image("images/siete.png");
-                                                buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                            } else if (((String) buton.getUserData()).equals("8")) {
-                                                Image icono = new Image("images/ocho.png");
-                                                buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                            } else {
-                                                System.err.println("Error en el tablero");
-                                            }
-                                        }
-                                    }
-                                    System.out.println("El usuario " + jugador.getNombre() + " ha perdido... Reiniciando...");
-                                    
-                                    Alert alert = new Alert(AlertType.INFORMATION);
-                                    alert.setTitle("Resultado");
-                                    alert.setHeaderText("Suerte para la próxima. A continuación se muestra tu resultado");
-                                    alert.setContentText("Eres una basura :v\nTu tiempo fue de: "+time);
-                                    alert.showAndWait();
-                                    finalizarJuego();
-                                } else if (event.getButton() == MouseButton.SECONDARY) {
-                                    if (!banderasColocadas.contains(boton)) {
-                                        Image icono = new Image("images/bandera.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        banderasColocadas.add(boton);
-                                        if (banderasColocadas.size() == totalMinas) {
-                                            System.out.println("GANASTEEEE");
-                                            stageTablero.close();
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                        Mina mina = new Mina(i,j,"-1");
-                        boton.setUserData(mina);
-                        celdas.add(boton);
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 0) {
-                        //Image icono = new Image("images/vacio.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        Mina mina = new Mina(i,j,"0");
-                        boton.setUserData(mina);
-                        boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                if (event.getButton() == MouseButton.PRIMARY) {
-                                    if (!celdasPresionadas.contains(boton)) {
-                                        Image icono = new Image("images/vacio.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        celdasPresionadas.add(boton);
-                                        if (celdasPresionadas.size() == totalCeldas) {
-                                            System.out.println("GANASTEEEE");
-                                            stageTablero.close();
-                                        }
-                                    }
-                                } else if (event.getButton() == MouseButton.SECONDARY) {
-                                    if(!celdasPresionadas.contains(boton)){
-                                        Image icono = new Image("images/bandera.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    }
-                                }
-                            }
-                        });
-                        celdas.add(boton);
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 1) {
-                        //Image icono = new Image("images/uno.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        Mina mina = new Mina(i,j,"1");
-                        boton.setUserData(mina);
-                        boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                if (event.getButton() == MouseButton.PRIMARY) {
-                                    if (!celdasPresionadas.contains(boton)) {
-                                        Image icono = new Image("images/uno.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        celdasPresionadas.add(boton);
-                                        if (celdasPresionadas.size() == totalCeldas) {
-                                            System.out.println("GANASTEEEE");
-                                            stageTablero.close();
-                                        }
-                                    }
-                                } else if (event.getButton() == MouseButton.SECONDARY) {
-                                    if(!celdasPresionadas.contains(boton)){
-                                        Image icono = new Image("images/bandera.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    }
-                                }
-                            }
-                        });
-                        celdas.add(boton);
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 2) {
-                        //Image icono = new Image("images/dos.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        Mina mina = new Mina(i,j,"2");
-                        boton.setUserData(mina);
-                        boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                if (event.getButton() == MouseButton.PRIMARY) {
-                                    if (!celdasPresionadas.contains(boton)) {
-                                        Image icono = new Image("images/dos.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        celdasPresionadas.add(boton);
-                                        if (celdasPresionadas.size() == totalCeldas) {
-                                            System.out.println("GANASTEEEE");
-                                            stageTablero.close();
-                                        }
-                                    }
-                                } else if (event.getButton() == MouseButton.SECONDARY) {
-                                    if(!celdasPresionadas.contains(boton)){
-                                        Image icono = new Image("images/bandera.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    }
-                                }
-                            }
-                        });
-                        celdas.add(boton);
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 3) {
-                        //Image icono = new Image("images/tres.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        Mina mina = new Mina(i,j,"3");
-                        boton.setUserData(mina);
-                        boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                if (event.getButton() == MouseButton.PRIMARY) {
-                                    if (!celdasPresionadas.contains(boton)) {
-                                        Image icono = new Image("images/tres.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        celdasPresionadas.add(boton);
-                                        if (celdasPresionadas.size() == totalCeldas) {
-                                            System.out.println("GANASTEEEE");
-                                            stageTablero.close();
-                                        }
-                                    }
-                                } else if (event.getButton() == MouseButton.SECONDARY) {
-                                    if(!celdasPresionadas.contains(boton)){
-                                        Image icono = new Image("images/bandera.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    }
-                                }
-                            }
-                        });
-                        celdas.add(boton);
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 4) {
-                        //Image icono = new Image("images/cuatro.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        Mina mina = new Mina(i,j,"4");
-                        boton.setUserData(mina);
-                        boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                if (event.getButton() == MouseButton.PRIMARY) {
-                                    if (!celdasPresionadas.contains(boton)) {
-                                        Image icono = new Image("images/cuatro.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        celdasPresionadas.add(boton);
-                                        if (celdasPresionadas.size() == totalCeldas) {
-                                            System.out.println("GANASTEEEE");
-                                            stageTablero.close();
-                                        }
-                                    }
-                                } else if (event.getButton() == MouseButton.SECONDARY) {
-                                    if(!celdasPresionadas.contains(boton)){
-                                        Image icono = new Image("images/bandera.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    }
-                                }
-                            }
-                        });
-                        celdas.add(boton);
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 5) {
-                        //Image icono = new Image("images/cinco.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        Mina mina = new Mina(i,j,"5");
-                        boton.setUserData(mina);
-                        boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                if (event.getButton() == MouseButton.PRIMARY) {
-                                    if (!celdasPresionadas.contains(boton)) {
-                                        Image icono = new Image("images/cinco.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        celdasPresionadas.add(boton);
-                                        if (celdasPresionadas.size() == totalCeldas) {
-                                            System.out.println("GANASTEEEE");
-                                            stageTablero.close();
-                                        }
-                                    }
-                                } else if (event.getButton() == MouseButton.SECONDARY) {
-                                    if(!celdasPresionadas.contains(boton)){
-                                        Image icono = new Image("images/bandera.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    }
-                                }
-                            }
-                        });
-                        celdas.add(boton);
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 6) {
-                        //Image icono = new Image("images/seis.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        Mina mina = new Mina(i,j,"6");
-                        boton.setUserData(mina);
-                        boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                if (event.getButton() == MouseButton.PRIMARY) {
-                                    if (!celdasPresionadas.contains(boton)) {
-                                        Image icono = new Image("images/seis.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        celdasPresionadas.add(boton);
-                                        if (celdasPresionadas.size() == totalCeldas) {
-                                            System.out.println("GANASTEEEE");
-                                            stageTablero.close();
-                                        }
-                                    }
-                                } else if (event.getButton() == MouseButton.SECONDARY) {
-                                    if(!celdasPresionadas.contains(boton)){
-                                        Image icono = new Image("images/bandera.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    }
-                                }
-                            }
-                        });
-                        celdas.add(boton);
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 7) {
-                        //Image icono = new Image("images/siete.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        Mina mina = new Mina(i,j,"7");
-                        boton.setUserData(mina);
-                        boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                if (event.getButton() == MouseButton.PRIMARY) {
-                                    if (!celdasPresionadas.contains(boton)) {
-                                        Image icono = new Image("images/siete.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        celdasPresionadas.add(boton);
-                                        if (celdasPresionadas.size() == totalCeldas) {
-                                            System.out.println("GANASTEEEE");
-                                            stageTablero.close();
-                                        }
-                                    }
-                                } else if (event.getButton() == MouseButton.SECONDARY) {
-                                    if(!celdasPresionadas.contains(boton)){
-                                        Image icono = new Image("images/bandera.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    }
-                                }
-                            }
-                        });
-                        celdas.add(boton);
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 8) {
-                        //Image icono = new Image("images/ocho.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        Mina mina = new Mina(i,j,"8");
-                        boton.setUserData(mina);
-                        boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                if (event.getButton() == MouseButton.PRIMARY) {
-                                    if (!celdasPresionadas.contains(boton)) {
-                                        Image icono = new Image("images/ocho.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                        celdasPresionadas.add(boton);
-                                        if (celdasPresionadas.size() == totalCeldas) {
-                                            System.out.println("GANASTEEEE");
-                                            stageTablero.close();
-                                        }
-                                    }
-                                } else if (event.getButton() == MouseButton.SECONDARY) {
-                                    if(!celdasPresionadas.contains(boton)){
-                                        Image icono = new Image("images/bandera.png");
-                                        boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    }
-                                }
-                            }
-                        });
-                        celdas.add(boton);
-                        gridPaneTablero.add(boton, i, j);
-                    } else {
-                        System.err.println("Error en el tablero");
-                    }
-                }
-            }
         } else if (jugador.getDificultad().equals("Intermedio")) {
             System.out.println("Se ha iniciado el modo intermedio");
-            tablero = crearTablero(16, 16);
-            totalCeldas = 216;
-            stageTablero.setWidth((31 * 16) + 25);
-            stageTablero.setHeight((31 * 16) + 70);
-            for (int i = 0; i < 16; i++) {
-                for (int j = 0; j < 16; j++) {
-                    Button boton = new Button();
-                    boton.setAlignment(Pos.CENTER);
-                    boton.setPrefSize(30, 30);
-                    boton.setPadding(new Insets(0));
-                    GridPane.setHalignment(boton, HPos.CENTER);
-                    GridPane.setMargin(boton, new Insets(0));
-                    //Image icono = new Image("images/celda.png");
-                    if (tablero[i][j] == -1) {
-                        Image icono = new Image("images/mina.jpg");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 0) {
-                        Image icono = new Image("images/vacio.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 1) {
-                        Image icono = new Image("images/uno.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 2) {
-                        Image icono = new Image("images/dos.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 3) {
-                        Image icono = new Image("images/tres.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 4) {
-                        Image icono = new Image("images/cuatro.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 5) {
-                        Image icono = new Image("images/cinco.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 6) {
-                        Image icono = new Image("images/seis.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 7) {
-                        Image icono = new Image("images/siete.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 8) {
-                        Image icono = new Image("images/ocho.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else {
-                        System.err.println("Error en el tablero");
-                    }
-                }
-            }
+            filas = 16;
+            columnas = 16;
+            totalMinas = 40;
         } else if (jugador.getDificultad().equals("Experto")) {
             System.out.println("Se ha iniciado el modo experto");
-            tablero = crearTablero(30, 16);
-            totalCeldas = 381;
-            stageTablero.setWidth((31 * 30) + 25);
-            stageTablero.setHeight((31 * 16) + 70);
-            for (int i = 0; i < 30; i++) {
-                for (int j = 0; j < 16; j++) {
-                    Button boton = new Button();
-                    boton.setAlignment(Pos.CENTER);
-                    boton.setPrefSize(30, 30);
-                    boton.setPadding(new Insets(0));
-                    GridPane.setHalignment(boton, HPos.CENTER);
-                    GridPane.setMargin(boton, new Insets(0));
-                    //Image icono = new Image("images/celda.png");
-                    if (tablero[i][j] == -1) {
-                        Image icono = new Image("images/mina.jpg");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 0) {
-                        Image icono = new Image("images/vacio.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 1) {
-                        Image icono = new Image("images/uno.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 2) {
-                        Image icono = new Image("images/dos.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 3) {
-                        Image icono = new Image("images/tres.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 4) {
-                        Image icono = new Image("images/cuatro.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 5) {
-                        Image icono = new Image("images/cinco.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 6) {
-                        Image icono = new Image("images/seis.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 7) {
-                        Image icono = new Image("images/siete.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else if (tablero[i][j] == 8) {
-                        Image icono = new Image("images/ocho.png");
-                        boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                        gridPaneTablero.add(boton, i, j);
-                    } else {
-                        System.err.println("Error en el tablero");
-                    }
+            filas = 30;
+            columnas = 16;
+            totalMinas = 99;
+        }
+        
+        tablero = crearTablero(filas, columnas);
+        totalCeldas = (filas*columnas)-totalMinas;
+        stageTablero.setWidth((31 * filas) + 25);
+        stageTablero.setHeight((31 * columnas) + 70);
+        
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                Button boton = new Button();
+                boton.setAlignment(Pos.CENTER);
+                boton.setPrefSize(30, 30);
+                boton.setPadding(new Insets(0));
+                GridPane.setHalignment(boton, HPos.CENTER);
+                GridPane.setMargin(boton, new Insets(0));
+                Image icono = new Image("images/celda.png");
+                if (tablero[i][j] == -1) {
+                    //Image icono = new Image("images/mina.jpg");
+                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                    boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            if (event.getButton() == MouseButton.PRIMARY) {
+                                String time = timer.getTime();
+                                timer.stopTimer();
+                                Image icono2 = new Image("images/minaExplota.jpg");
+                                boton.setBackground(new Background(new BackgroundImage(icono2, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                for (Button buton : celdas) {
+                                    if (!boton.equals(buton)) {
+                                        if (((String) buton.getUserData()).equals("-1")) {
+                                            Image icono = new Image("images/mina.jpg");
+                                            buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                        } else if (((String) buton.getUserData()).equals("0")) {
+                                            Image icono = new Image("images/vacio.png");
+                                            buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                        } else if (((String) buton.getUserData()).equals("1")) {
+                                            Image icono = new Image("images/uno.png");
+                                            buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                        } else if (((String) buton.getUserData()).equals("2")) {
+                                            Image icono = new Image("images/dos.png");
+                                            buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                        } else if (((String) buton.getUserData()).equals("3")) {
+                                            Image icono = new Image("images/tres.png");
+                                            buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                        } else if (((String) buton.getUserData()).equals("4")) {
+                                            Image icono = new Image("images/cuatro.png");
+                                            buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                        } else if (((String) buton.getUserData()).equals("5")) {
+                                            Image icono = new Image("images/cinco.png");
+                                            buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                        } else if (((String) buton.getUserData()).equals("6")) {
+                                            Image icono = new Image("images/seis.png");
+                                            buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                        } else if (((String) buton.getUserData()).equals("7")) {
+                                            Image icono = new Image("images/siete.png");
+                                            buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                        } else if (((String) buton.getUserData()).equals("8")) {
+                                            Image icono = new Image("images/ocho.png");
+                                            buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                        } else {
+                                            System.err.println("Error en el tablero");
+                                        }
+                                    }
+                                }
+                                System.out.println("El usuario " + jugador.getNombre() + " ha perdido... Reiniciando...");
+
+                                Alert alert = new Alert(AlertType.INFORMATION);
+                                alert.setTitle("Resultado");
+                                alert.setHeaderText("Suerte para la próxima. A continuación se muestra tu resultado");
+                                alert.setContentText("Eres una basura :v\nTu tiempo fue de: "+time);
+                                alert.showAndWait();
+                                finalizarJuego();
+                            } else if (event.getButton() == MouseButton.SECONDARY) {
+                                if (!banderasColocadas.contains(boton)) {
+                                    Image icono = new Image("images/bandera.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    banderasColocadas.add(boton);
+                                    if (banderasColocadas.size() == totalMinas) {
+                                        System.out.println("GANASTEEEE");
+                                        stageTablero.close();
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    Mina mina = new Mina(i,j,"-1");
+                    boton.setUserData(mina);
+                    celdas.add(boton);
+                    gridPaneTablero.add(boton, i, j);
+                } else if (tablero[i][j] == 0) {
+                    //Image icono = new Image("images/vacio.png");
+                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                    Mina mina = new Mina(i,j,"0");
+                    boton.setUserData(mina);
+                    boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            if (event.getButton() == MouseButton.PRIMARY) {
+                                if (!celdasPresionadas.contains(boton)) {
+                                    Image icono = new Image("images/vacio.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    celdasPresionadas.add(boton);
+                                    if (celdasPresionadas.size() == totalCeldas) {
+                                        System.out.println("GANASTEEEE");
+                                        stageTablero.close();
+                                    }
+                                }
+                            } else if (event.getButton() == MouseButton.SECONDARY) {
+                                if(!celdasPresionadas.contains(boton)){
+                                    Image icono = new Image("images/bandera.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                }
+                            }
+                        }
+                    });
+                    celdas.add(boton);
+                    gridPaneTablero.add(boton, i, j);
+                } else if (tablero[i][j] == 1) {
+                    //Image icono = new Image("images/uno.png");
+                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                    Mina mina = new Mina(i,j,"1");
+                    boton.setUserData(mina);
+                    boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            if (event.getButton() == MouseButton.PRIMARY) {
+                                if (!celdasPresionadas.contains(boton)) {
+                                    Image icono = new Image("images/uno.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    celdasPresionadas.add(boton);
+                                    if (celdasPresionadas.size() == totalCeldas) {
+                                        System.out.println("GANASTEEEE");
+                                        stageTablero.close();
+                                    }
+                                }
+                            } else if (event.getButton() == MouseButton.SECONDARY) {
+                                if(!celdasPresionadas.contains(boton)){
+                                    Image icono = new Image("images/bandera.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                }
+                            }
+                        }
+                    });
+                    celdas.add(boton);
+                    gridPaneTablero.add(boton, i, j);
+                } else if (tablero[i][j] == 2) {
+                    //Image icono = new Image("images/dos.png");
+                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                    Mina mina = new Mina(i,j,"2");
+                    boton.setUserData(mina);
+                    boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            if (event.getButton() == MouseButton.PRIMARY) {
+                                if (!celdasPresionadas.contains(boton)) {
+                                    Image icono = new Image("images/dos.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    celdasPresionadas.add(boton);
+                                    if (celdasPresionadas.size() == totalCeldas) {
+                                        System.out.println("GANASTEEEE");
+                                        stageTablero.close();
+                                    }
+                                }
+                            } else if (event.getButton() == MouseButton.SECONDARY) {
+                                if(!celdasPresionadas.contains(boton)){
+                                    Image icono = new Image("images/bandera.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                }
+                            }
+                        }
+                    });
+                    celdas.add(boton);
+                    gridPaneTablero.add(boton, i, j);
+                } else if (tablero[i][j] == 3) {
+                    //Image icono = new Image("images/tres.png");
+                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                    Mina mina = new Mina(i,j,"3");
+                    boton.setUserData(mina);
+                    boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            if (event.getButton() == MouseButton.PRIMARY) {
+                                if (!celdasPresionadas.contains(boton)) {
+                                    Image icono = new Image("images/tres.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    celdasPresionadas.add(boton);
+                                    if (celdasPresionadas.size() == totalCeldas) {
+                                        System.out.println("GANASTEEEE");
+                                        stageTablero.close();
+                                    }
+                                }
+                            } else if (event.getButton() == MouseButton.SECONDARY) {
+                                if(!celdasPresionadas.contains(boton)){
+                                    Image icono = new Image("images/bandera.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                }
+                            }
+                        }
+                    });
+                    celdas.add(boton);
+                    gridPaneTablero.add(boton, i, j);
+                } else if (tablero[i][j] == 4) {
+                    //Image icono = new Image("images/cuatro.png");
+                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                    Mina mina = new Mina(i,j,"4");
+                    boton.setUserData(mina);
+                    boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            if (event.getButton() == MouseButton.PRIMARY) {
+                                if (!celdasPresionadas.contains(boton)) {
+                                    Image icono = new Image("images/cuatro.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    celdasPresionadas.add(boton);
+                                    if (celdasPresionadas.size() == totalCeldas) {
+                                        System.out.println("GANASTEEEE");
+                                        stageTablero.close();
+                                    }
+                                }
+                            } else if (event.getButton() == MouseButton.SECONDARY) {
+                                if(!celdasPresionadas.contains(boton)){
+                                    Image icono = new Image("images/bandera.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                }
+                            }
+                        }
+                    });
+                    celdas.add(boton);
+                    gridPaneTablero.add(boton, i, j);
+                } else if (tablero[i][j] == 5) {
+                    //Image icono = new Image("images/cinco.png");
+                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                    Mina mina = new Mina(i,j,"5");
+                    boton.setUserData(mina);
+                    boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            if (event.getButton() == MouseButton.PRIMARY) {
+                                if (!celdasPresionadas.contains(boton)) {
+                                    Image icono = new Image("images/cinco.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    celdasPresionadas.add(boton);
+                                    if (celdasPresionadas.size() == totalCeldas) {
+                                        System.out.println("GANASTEEEE");
+                                        stageTablero.close();
+                                    }
+                                }
+                            } else if (event.getButton() == MouseButton.SECONDARY) {
+                                if(!celdasPresionadas.contains(boton)){
+                                    Image icono = new Image("images/bandera.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                }
+                            }
+                        }
+                    });
+                    celdas.add(boton);
+                    gridPaneTablero.add(boton, i, j);
+                } else if (tablero[i][j] == 6) {
+                    //Image icono = new Image("images/seis.png");
+                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                    Mina mina = new Mina(i,j,"6");
+                    boton.setUserData(mina);
+                    boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            if (event.getButton() == MouseButton.PRIMARY) {
+                                if (!celdasPresionadas.contains(boton)) {
+                                    Image icono = new Image("images/seis.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    celdasPresionadas.add(boton);
+                                    if (celdasPresionadas.size() == totalCeldas) {
+                                        System.out.println("GANASTEEEE");
+                                        stageTablero.close();
+                                    }
+                                }
+                            } else if (event.getButton() == MouseButton.SECONDARY) {
+                                if(!celdasPresionadas.contains(boton)){
+                                    Image icono = new Image("images/bandera.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                }
+                            }
+                        }
+                    });
+                    celdas.add(boton);
+                    gridPaneTablero.add(boton, i, j);
+                } else if (tablero[i][j] == 7) {
+                    //Image icono = new Image("images/siete.png");
+                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                    Mina mina = new Mina(i,j,"7");
+                    boton.setUserData(mina);
+                    boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            if (event.getButton() == MouseButton.PRIMARY) {
+                                if (!celdasPresionadas.contains(boton)) {
+                                    Image icono = new Image("images/siete.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    celdasPresionadas.add(boton);
+                                    if (celdasPresionadas.size() == totalCeldas) {
+                                        System.out.println("GANASTEEEE");
+                                        stageTablero.close();
+                                    }
+                                }
+                            } else if (event.getButton() == MouseButton.SECONDARY) {
+                                if(!celdasPresionadas.contains(boton)){
+                                    Image icono = new Image("images/bandera.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                }
+                            }
+                        }
+                    });
+                    celdas.add(boton);
+                    gridPaneTablero.add(boton, i, j);
+                } else if (tablero[i][j] == 8) {
+                    //Image icono = new Image("images/ocho.png");
+                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                    Mina mina = new Mina(i,j,"8");
+                    boton.setUserData(mina);
+                    boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            if (event.getButton() == MouseButton.PRIMARY) {
+                                if (!celdasPresionadas.contains(boton)) {
+                                    Image icono = new Image("images/ocho.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                    celdasPresionadas.add(boton);
+                                    if (celdasPresionadas.size() == totalCeldas) {
+                                        System.out.println("GANASTEEEE");
+                                        stageTablero.close();
+                                    }
+                                }
+                            } else if (event.getButton() == MouseButton.SECONDARY) {
+                                if(!celdasPresionadas.contains(boton)){
+                                    Image icono = new Image("images/bandera.png");
+                                    boton.setBackground(new Background(new BackgroundImage(icono,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                }
+                            }
+                        }
+                    });
+                    celdas.add(boton);
+                    gridPaneTablero.add(boton, i, j);
+                } else {
+                    System.err.println("Error en el tablero");
                 }
             }
-
         }
         //gridPaneTablero.setAlignment(Pos.CENTER);
         gridPaneTablero.setLayoutX(10);
@@ -605,8 +501,8 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 }else if((tablero[i - 1][j - 1] != 0)&&(tablero[i - 1][j - 1] != -1)){
                     Button btn = celdas.get((i)*totalY+(j+1));
                     if(!celdasPresionadas.contains(btn)){
-                        //Image icono = new Image("images/"+((btn.))+".jpg");
-                        //btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                        Image icono = new Image("images/"+((Mina)btn.getUserData()).tipo+".jpg");
+                        btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(celdas.get((i)*totalY+(j+1)));
                         vacioRecursivo(i-1,j-1,totalX,totalY);
                     }
