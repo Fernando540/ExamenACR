@@ -28,8 +28,8 @@ public class Cliente {
         System.out.println("Enviaste: "+ent);
         writer.write(ent);
         writer.flush();
-        String svMsg = br.readLine();//sc.readLine();
-        System.out.println("Server dice: "+svMsg);
+        /*String svMsg = br.readLine();//sc.readLine();
+        System.out.println("Server dice: "+svMsg);*/
 
         int[][] tablero=null;
         switch(ent){

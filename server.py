@@ -71,6 +71,16 @@ s.bind((HOST, PORT))
 s.listen(5)
 print(f"Servicio iniciado en {HOST}:{PORT}")
 
+"""
+f = open('Records.txt', 'r')
+print(f.read())
+f.close()
+
+f = open('Records.txt', 'a')
+f.write('Fernando: 00:09:22\n')
+f.close()
+"""
+
 while True:
 	ss, address = s.accept()
 	print(f"Conexión desde {address} se ha establecido!")
@@ -83,9 +93,8 @@ while True:
 	#num, = struct.unpack('<i',data)
 	#print(num)
 	msg = data.decode("utf-8")
-	print(f"Mandaron: {msg}\nEnviando eco...")
-	ss.send(bytes(msg+'\n',"utf-8"))
-	print("OK!")
+	print(f"Se recibió: {msg}")
+	#ss.send(bytes(msg+'\n',"utf-8"))
 
 	if(msg=="1"):
 		print("Principiante")
@@ -123,5 +132,3 @@ while True:
 		#ss.send(bytes(cadena))
 
 	"""
-	#ss.send("Hola!\r\n".encode("UTF-8"))
-	#ss.close()
