@@ -240,7 +240,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true,timer.stopTimer());
@@ -278,7 +278,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true,timer.stopTimer());
@@ -316,7 +316,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true,timer.stopTimer());
@@ -354,7 +354,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true,timer.stopTimer());
@@ -392,7 +392,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true,timer.stopTimer());
@@ -430,7 +430,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true,timer.stopTimer());
@@ -468,7 +468,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true,timer.stopTimer());
@@ -506,7 +506,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true,timer.stopTimer());
@@ -544,7 +544,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true,timer.stopTimer());
