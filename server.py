@@ -60,9 +60,67 @@ def creaTablero(f,c):
 
 	return arr
 
+def mandaTablero():
+	data = ss.recv(1024)
+	print(data)
+	msg = data.decode("utf-8")
+	#print(f"Dificultad: {msg}")
+	if(msg=="1"):
+		print("Principiante")
+		tablero=creaTablero(9,9)
+	else:
+		if(msg=="2"):
+			print("Intermedio")
+			tablero=creaTablero(16,16)
+		else:
+			print("Avanzado")
+			tablero=creaTablero(16,30)
+
+	print("Enviando arreglo...")
+	for i in range(len(tablero)):
+		for j in range(len(tablero[0])):
+			ss.send(bytes(str(tablero[i][j])+'\n',"utf-8"))
+
+	print("Done...")
+
+def mandaScoreboard():
+	return 0
+
+def saveWinner():
+	print("Guardando score...")
+	data = ss.recv(1024)
+	print(data)
+	msg = data.decode("utf-8")
+	if(msg=="1"):
+		f = open('Principiantes.txt', 'a')
+	else:
+		if(msg=="2"):
+			f = open('Intermedios.txt', 'a')
+		else:
+			f = open('Expertos.txt', 'a')
+	
+	data = ss.recv(1024)
+	print(data)
+	data = ss.recv(1024)
+	print(data)
+	msg = data.decode("utf-8")
+	f.write(msg+'\n')
+	f.close()
+	print("Done!")
 
 
 #---------------------------------------------------------------------------------
+switcher = {
+	"0": mandaTablero,
+	"1": mandaScoreboard,
+	"2": saveWinner
+}
+
+def opciones(argument):
+	func = switcher.get(argument, "Errorts")
+	return func()
+
+
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 1234  		# Port to listen on (non-privileged ports are > 1023)
 
@@ -84,35 +142,18 @@ f.close()
 while True:
 	ss, address = s.accept()
 	print(f"Conexión desde {address} se ha establecido!")
-	#ss.send(bytes("HOLA QUE TAL!"+'\n',"utf-8"))
-	#cadena = input("Escribe algo para enviar ('q' para salir)\n")
-	data = ss.recv(1024)
-	if not data:
-		break
-	print(data)
-	#num, = struct.unpack('<i',data)
-	#print(num)
-	msg = data.decode("utf-8")
-	print(f"Se recibió: {msg}")
-	#ss.send(bytes(msg+'\n',"utf-8"))
-
-	if(msg=="1"):
-		print("Principiante")
-		tablero=creaTablero(9,9)
-	else:
-		if(msg=="2"):
-			print("Intermedio")
-			tablero=creaTablero(16,16)
-		else:
-			print("Avanzado")
-			tablero=creaTablero(16,30)
+	mandaTablero()
 	
-	print("Enviando arreglo...")
-	for i in range(len(tablero)):
-		for j in range(len(tablero[0])):
-			ss.send(bytes(str(tablero[i][j])+'\n',"utf-8"))
-
-	print("OK!")
+	while True:
+		print("Esperando instrucción...")
+		datos = ss.recv(1024)
+		print(datos)
+		opt = datos.decode("utf-8")
+		if(opt=="-1"):
+			break
+		else:
+			print(f"Ejecutando opción: {opt}")
+			opciones(opt)
 	
 	
 	"""

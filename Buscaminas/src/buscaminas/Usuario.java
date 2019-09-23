@@ -5,6 +5,9 @@
  */
 package buscaminas;
 
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.Date;
 
 /**
@@ -17,6 +20,9 @@ public class Usuario {
     private Date inicioT;
     private Date finT;
     private int isWinner;
+    private Socket cl;
+    private BufferedReader br;
+    private PrintWriter writer;
 
     public Usuario(String nombre, String dificultad, Date inicioT, Date finT, int isWinner) {
         this.nombre = nombre;
@@ -26,10 +32,13 @@ public class Usuario {
         this.isWinner = isWinner;
     }
 
-    public Usuario(String nombre, String dificultad, Date inicioT) {
+    public Usuario(String nombre, String dificultad, Date inicioT, Socket cl, BufferedReader br, PrintWriter writer) {
         this.nombre = nombre;
         this.dificultad = dificultad;
         this.inicioT = inicioT;
+        this.cl = cl;
+        this.br = br;
+        this.writer = writer;
     }
     
     
@@ -74,6 +83,14 @@ public class Usuario {
         this.isWinner = isWinner;
     }
     
-    
-    
+    public Socket getSocket() {
+        return cl;
+    }
+    public BufferedReader getBr() {
+        return br;
+    }
+    public PrintWriter getWriter() {
+        return writer;
+    } 
+        
 }

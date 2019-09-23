@@ -5,10 +5,16 @@
  */
 package buscaminas;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -43,6 +49,10 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private AnchorPane anchorPanePrincipal;
     
+    private Socket cl;
+    private BufferedReader br;
+    private PrintWriter writer;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ObservableList<String> list = FXCollections.observableArrayList();
@@ -50,13 +60,20 @@ public class FXMLDocumentController implements Initializable {
         list.add("Intermedio");
         list.add("Experto");
         comboBoxNivel.setItems(list);
+        while(cl==null){
+            try {
+                conectar();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     @FXML
     public void jugar(ActionEvent e) throws IOException{
         if((!textFieldNombreUsuario.getText().trim().isEmpty())&&(comboBoxNivel.getValue()!=null)){
             System.out.println("Accedio");
-            Usuario usuario = new Usuario(textFieldNombreUsuario.getText(),(String)comboBoxNivel.getValue(),new Date());
+            Usuario usuario = new Usuario(textFieldNombreUsuario.getText(),(String)comboBoxNivel.getValue(),new Date(),cl,br,writer);
             Parent root = FXMLLoader.load(getClass().getResource("FXMLJuegoBuscaminas.fxml"));
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -88,6 +105,24 @@ public class FXMLDocumentController implements Initializable {
             }
             stageAlerta.close();
         }
+    }
+    
+    @FXML
+    public void showScores(ActionEvent e) throws IOException{
+        
+    }
+    
+    public void conectar() throws InterruptedException{
+        int pto = 1234;
+        String host = "127.0.0.1";
+        try {
+            cl = new Socket(host, pto);
+            br = new BufferedReader(new InputStreamReader(cl.getInputStream()));
+            writer = new PrintWriter(cl.getOutputStream(), true);
+        } catch (IOException ex) {
+            System.out.println("Servidor no encontrado... Reintendando en 3 segundos");
+            Thread.sleep(3000);
+        }   
     }
     
 }
