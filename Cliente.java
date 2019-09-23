@@ -22,14 +22,20 @@ public class Cliente {
         DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
         DataInputStream dis = new DataInputStream(cl.getInputStream());
 
-        System.out.println("Escribe algo: ");
+        System.out.println("Escribe la opcion: ");
         Scanner sc = new Scanner(System.in);
         String ent = sc.nextLine();//sc.nextLine();
         System.out.println("Enviaste: "+ent);
         writer.write(ent);
         writer.flush();
+
         /*String svMsg = br.readLine();//sc.readLine();
         System.out.println("Server dice: "+svMsg);*/
+        System.out.println("Dificultad: ");
+        ent = sc.nextLine();//sc.nextLine();
+        writer.write(ent);
+        writer.flush();
+
 
         int[][] tablero=null;
         switch(ent){

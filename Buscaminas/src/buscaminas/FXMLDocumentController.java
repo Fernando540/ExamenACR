@@ -1,14 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package buscaminas;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,7 +18,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -33,15 +33,15 @@ import javafx.stage.StageStyle;
 public class FXMLDocumentController implements Initializable {
     
     @FXML
-    private Button buttonJugar;
-    @FXML
-    private Button buttonRecords;
-    @FXML
     private ComboBox comboBoxNivel;
     @FXML
     private TextField textFieldNombreUsuario;
     @FXML
     private AnchorPane anchorPanePrincipal;
+    
+    private Socket cl;
+    private BufferedReader br;
+    private PrintWriter writer;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -50,13 +50,23 @@ public class FXMLDocumentController implements Initializable {
         list.add("Intermedio");
         list.add("Experto");
         comboBoxNivel.setItems(list);
+        
+        int pto = 1234;
+        String host = "127.0.0.1";
+        try {
+            cl = new Socket(host, pto);
+            br = new BufferedReader(new InputStreamReader(cl.getInputStream()));
+            writer = new PrintWriter(cl.getOutputStream(), true);   
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @FXML
     public void jugar(ActionEvent e) throws IOException{
         if((!textFieldNombreUsuario.getText().trim().isEmpty())&&(comboBoxNivel.getValue()!=null)){
             System.out.println("Accedio");
-            Usuario usuario = new Usuario(textFieldNombreUsuario.getText(),(String)comboBoxNivel.getValue(),new Date());
+            Usuario usuario = new Usuario(textFieldNombreUsuario.getText(),(String)comboBoxNivel.getValue(),new Date(),cl,br,writer);
             Parent root = FXMLLoader.load(getClass().getResource("FXMLJuegoBuscaminas.fxml"));
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -71,6 +81,8 @@ public class FXMLDocumentController implements Initializable {
             stage.setUserData(usuario);
             stage.show();
             ((Stage)(anchorPanePrincipal.getScene().getWindow())).close();
+            writer.write("0");
+            writer.flush();
         }else{
             Label labelAlerta = new Label("ERROR: Ingresa un nombre de usuario.");
             Scene esceneAlerta = new Scene(labelAlerta);
@@ -88,6 +100,11 @@ public class FXMLDocumentController implements Initializable {
             }
             stageAlerta.close();
         }
+    }
+    
+    @FXML
+    public void verMarcadores(ActionEvent e) throws IOException{
+        
     }
     
 }

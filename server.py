@@ -60,9 +60,44 @@ def creaTablero(f,c):
 
 	return arr
 
+def mandaTablero():
+	data = ss.recv(1024)
+	print(data)
+	msg = data.decode("utf-8")
+	#print(f"Dificultad: {msg}")
+	if(msg=="1"):
+		print("Principiante")
+		tablero=creaTablero(9,9)
+	else:
+		if(msg=="2"):
+			print("Intermedio")
+			tablero=creaTablero(16,16)
+		else:
+			print("Avanzado")
+			tablero=creaTablero(16,30)
 
+	print("Enviando arreglo...")
+	for i in range(len(tablero)):
+		for j in range(len(tablero[0])):
+			ss.send(bytes(str(tablero[i][j])+'\n',"utf-8"))
+
+	print("Done...")
+
+def mandaScoreboard():
+	return 0
+	
 
 #---------------------------------------------------------------------------------
+
+switcher = {
+	"0": mandaTablero,
+	"1": mandaScoreboard
+}
+
+def opciones(argument):
+	func = switcher.get(argument, "Errorts")
+	return func()
+
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 1234  		# Port to listen on (non-privileged ports are > 1023)
 
@@ -80,10 +115,10 @@ f = open('Records.txt', 'a')
 f.write('Fernando: 00:09:22\n')
 f.close()
 """
-
 while True:
 	ss, address = s.accept()
 	print(f"Conexión desde {address} se ha establecido!")
+	print("Esperando instrucción...")
 	#ss.send(bytes("HOLA QUE TAL!"+'\n',"utf-8"))
 	#cadena = input("Escribe algo para enviar ('q' para salir)\n")
 	data = ss.recv(1024)
@@ -93,9 +128,10 @@ while True:
 	#num, = struct.unpack('<i',data)
 	#print(num)
 	msg = data.decode("utf-8")
-	print(f"Se recibió: {msg}")
-	#ss.send(bytes(msg+'\n',"utf-8"))
-
+	print(f"Ejecutando opción: {msg}")
+	opciones(msg)
+	print("Instrucción OK!")
+	"""
 	if(msg=="1"):
 		print("Principiante")
 		tablero=creaTablero(9,9)
@@ -112,7 +148,7 @@ while True:
 		for j in range(len(tablero[0])):
 			ss.send(bytes(str(tablero[i][j])+'\n',"utf-8"))
 
-	print("OK!")
+	print("OK!")"""
 	
 	
 	"""

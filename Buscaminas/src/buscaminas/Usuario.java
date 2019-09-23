@@ -1,10 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package buscaminas;
 
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.Date;
 
 /**
@@ -17,6 +15,9 @@ public class Usuario {
     private Date inicioT;
     private Date finT;
     private int isWinner;
+    private Socket clientSocket;
+    private BufferedReader br;
+    private PrintWriter writer;
 
     public Usuario(String nombre, String dificultad, Date inicioT, Date finT, int isWinner) {
         this.nombre = nombre;
@@ -26,10 +27,13 @@ public class Usuario {
         this.isWinner = isWinner;
     }
 
-    public Usuario(String nombre, String dificultad, Date inicioT) {
+    public Usuario(String nombre, String dificultad, Date inicioT, Socket cl,BufferedReader br, PrintWriter writer) {
         this.nombre = nombre;
         this.dificultad = dificultad;
         this.inicioT = inicioT;
+        this.clientSocket=cl;
+        this.br= br;
+        this.writer=writer;
     }
     
     
@@ -68,6 +72,18 @@ public class Usuario {
 
     public int getIsWinner() {
         return isWinner;
+    }
+    
+    public Socket getSocket() {
+        return clientSocket;
+    }
+    
+    public BufferedReader getBr() {
+        return br;
+    }
+    
+    public PrintWriter getWriter() {
+        return writer;
     }
 
     public void setIsWinner(int isWinner) {

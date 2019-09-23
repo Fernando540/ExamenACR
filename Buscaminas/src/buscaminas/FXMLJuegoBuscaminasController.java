@@ -1,6 +1,10 @@
 package buscaminas;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +50,7 @@ import javafx.stage.WindowEvent;
  * @author nahomi, ferna
  */
 public class FXMLJuegoBuscaminasController implements Initializable {
-    
+
     @FXML
     private AnchorPane anchorPaneTablero;
     @FXML
@@ -64,18 +68,20 @@ public class FXMLJuegoBuscaminasController implements Initializable {
     private ArrayList<Button> banderasColocadas = new ArrayList<>();
     private int totalCeldas;
     private int totalMinas;
-    private int filas=0,columnas=0;
+    private int filas = 0, columnas = 0;
+    private Usuario jugador;
 
-    /**
-     * Initializes the controller class.
-     */
+    private Socket cl;
+    private BufferedReader br;
+    private PrintWriter writer;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+
     }
 
     @FXML
-    public void empezar(ActionEvent e) {
+    public void empezar(ActionEvent e) throws IOException {
         gridPaneTablero = new GridPane();
         gridPaneTablero.setVgap(1);
         gridPaneTablero.setHgap(1);
@@ -84,8 +90,12 @@ public class FXMLJuegoBuscaminasController implements Initializable {
         buttonEmpezar.setDisable(true);
         stageTablero = ((Stage) anchorPaneTablero.getScene().getWindow());
         stageTablero.centerOnScreen();
-        Usuario jugador = (Usuario) (stageTablero.getUserData());
-        
+        jugador = (Usuario) (stageTablero.getUserData());
+
+        cl = jugador.getSocket();
+        br = jugador.getBr();
+        writer = jugador.getWriter();
+
         stageTablero.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
@@ -94,41 +104,60 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 System.exit(0);
             }
         });
-        
+
         System.out.println("Ha ingresado el jugador");
         System.out.println(jugador.getNombre());
         System.out.println(jugador.getDificultad());
         System.out.println(jugador.getInicioT().toString());
-        
-        if (jugador.getDificultad().equals("Principiante")) {
-            System.out.println("Se ha iniciado el modo principiante");
-            filas = 9;
-            columnas = 9;
-            totalMinas = 10;
-        } else if (jugador.getDificultad().equals("Intermedio")) {
-            System.out.println("Se ha iniciado el modo intermedio");
-            filas = 16;
-            columnas = 16;
-            totalMinas = 40;
-        } else if (jugador.getDificultad().equals("Experto")) {
-            System.out.println("Se ha iniciado el modo experto");
-            filas = 16;
-            columnas = 30;
-            totalMinas = 99;
+
+        String dif = "";
+        switch (jugador.getDificultad()) {
+            case "Principiante":
+                System.out.println("Se ha iniciado el modo principiante");
+                filas = 9;
+                columnas = 9;
+                totalMinas = 10;
+                tablero = new int[9][9];
+                dif="1";
+                break;
+            case "Intermedio":
+                System.out.println("Se ha iniciado el modo intermedio");
+                filas = 16;
+                columnas = 16;
+                totalMinas = 40;
+                dif="2";
+                break;
+            case "Experto":
+                System.out.println("Se ha iniciado el modo experto");
+                filas = 16;
+                columnas = 30;
+                totalMinas = 99;
+                dif="3";
+                break;
+            default:
+                break;
         }
-        
-        tablero = crearTablero(filas, columnas);
-        for (int i = 0; i < filas; i++) {
-            for (int j = 0; j < columnas; j++) {
-                System.out.print("  "+tablero[i][j]);
+        writer.write(dif);
+        writer.flush();
+        tablero = new int[filas][columnas];
+
+        for (int i = 0; i < tablero.length; i++) {
+            for (int j = 0; j < tablero[0].length; j++) {
+                int a = Integer.parseInt(br.readLine());//sc.readLine();
+                tablero[i][j] = a;
+                if (a != -1) {
+                    System.out.print(a + " ");
+                } else {
+                    System.out.print("# ");
+                }
             }
             System.out.println("");
         }
-        
-        totalCeldas = (filas*columnas)-totalMinas;
+
+        totalCeldas = (filas * columnas) - totalMinas;
         stageTablero.setWidth((31 * columnas) + 25);
         stageTablero.setHeight((31 * filas) + 70);
-        
+
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 Button boton = new Button();
@@ -138,7 +167,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 GridPane.setHalignment(boton, HPos.CENTER);
                 GridPane.setMargin(boton, new Insets(0));
                 Image icono = new Image("images/celda.png");
-                
+
                 if (tablero[i][j] == -1) {
                     //Image icono = new Image("images/mina.jpg");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -152,7 +181,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 boton.setBackground(new Background(new BackgroundImage(icono2, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                 for (Button buton : celdas) {
                                     if (!boton.equals(buton)) {
-                                        if (((Mina)buton.getUserData()).getTipo().equals("images/mina.png")) {
+                                        if (((Mina) buton.getUserData()).getTipo().equals("images/mina.png")) {
                                             Image icono = new Image("images/mina.jpg");
                                             buton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                                         } else if (((Mina) buton.getUserData()).getTipo().equals("images/vacio.png")) {
@@ -192,9 +221,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 Alert alert = new Alert(AlertType.INFORMATION);
                                 alert.setTitle("Resultado");
                                 alert.setHeaderText("Suerte para la próxima. A continuación se muestra tu resultado");
-                                alert.setContentText("Eres una basura :v\nTu tiempo fue de: "+time);
+                                alert.setContentText("Tu tiempo fue de: " + time);
                                 alert.showAndWait();
-                                finalizarJuego(false,tiempoParo);
+                                finalizarJuego(false, tiempoParo);
                             } else if (event.getButton() == MouseButton.SECONDARY) {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
@@ -202,10 +231,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
-                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                } else if (banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))) {
                                     banderasColocadas.remove(boton);
                                     Image icono = new Image("images/celda.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -213,13 +242,13 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                             }
                         }
                     });
-                    boton.setUserData(new Mina(i,j,"images/mina.png",-1));
+                    boton.setUserData(new Mina(i, j, "images/mina.png", -1));
                     celdas.add(boton);
                     gridPaneTablero.add(boton, j, i);
                 } else if (tablero[i][j] == 0) {
                     //Image icono = new Image("images/vacio.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    boton.setUserData(new Mina(i,j,"images/vacio.png",0));
+                    boton.setUserData(new Mina(i, j, "images/vacio.png", 0));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -230,10 +259,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
-                                    }else{
-                                        vacioRecursivo(((Mina)boton.getUserData()).getPosicionX(),((Mina)boton.getUserData()).getPosicionY(), filas, columnas);
+                                    } else {
+                                        vacioRecursivo(((Mina) boton.getUserData()).getPosicionX(), ((Mina) boton.getUserData()).getPosicionY(), filas, columnas);
                                     }
                                 }
                             } else if (event.getButton() == MouseButton.SECONDARY) {
@@ -243,10 +272,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
-                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                } else if (banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))) {
                                     banderasColocadas.remove(boton);
                                     Image icono = new Image("images/celda.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -259,7 +288,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 } else if (tablero[i][j] == 1) {
                     //Image icono = new Image("images/uno.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    boton.setUserData(new Mina(i,j,"images/uno.png",1));
+                    boton.setUserData(new Mina(i, j, "images/uno.png", 1));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -270,7 +299,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
@@ -281,10 +310,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
-                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                } else if (banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))) {
                                     banderasColocadas.remove(boton);
                                     Image icono = new Image("images/celda.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -297,7 +326,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 } else if (tablero[i][j] == 2) {
                     //Image icono = new Image("images/dos.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    boton.setUserData(new Mina(i,j,"images/dos.png",2));
+                    boton.setUserData(new Mina(i, j, "images/dos.png", 2));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -308,7 +337,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
@@ -319,10 +348,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
-                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                } else if (banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))) {
                                     banderasColocadas.remove(boton);
                                     Image icono = new Image("images/celda.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -335,7 +364,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 } else if (tablero[i][j] == 3) {
                     //Image icono = new Image("images/tres.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    boton.setUserData(new Mina(i,j,"images/tres.png",3));
+                    boton.setUserData(new Mina(i, j, "images/tres.png", 3));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -346,7 +375,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
@@ -357,10 +386,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
-                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                } else if (banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))) {
                                     banderasColocadas.remove(boton);
                                     Image icono = new Image("images/celda.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -373,7 +402,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 } else if (tablero[i][j] == 4) {
                     //Image icono = new Image("images/cuatro.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    boton.setUserData(new Mina(i,j,"images/cuatro.png",4));
+                    boton.setUserData(new Mina(i, j, "images/cuatro.png", 4));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -384,7 +413,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
@@ -395,10 +424,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
-                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                } else if (banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))) {
                                     banderasColocadas.remove(boton);
                                     Image icono = new Image("images/celda.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -411,7 +440,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 } else if (tablero[i][j] == 5) {
                     //Image icono = new Image("images/cinco.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    boton.setUserData(new Mina(i,j,"images/cinco.png",5));
+                    boton.setUserData(new Mina(i, j, "images/cinco.png", 5));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -422,7 +451,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
@@ -433,10 +462,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
-                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                } else if (banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))) {
                                     banderasColocadas.remove(boton);
                                     Image icono = new Image("images/celda.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -449,7 +478,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 } else if (tablero[i][j] == 6) {
                     //Image icono = new Image("images/seis.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    boton.setUserData(new Mina(i,j,"images/seis.png",6));
+                    boton.setUserData(new Mina(i, j, "images/seis.png", 6));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -460,7 +489,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
@@ -471,10 +500,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
-                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                } else if (banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))) {
                                     banderasColocadas.remove(boton);
                                     Image icono = new Image("images/celda.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -487,7 +516,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 } else if (tablero[i][j] == 7) {
                     //Image icono = new Image("images/siete.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    boton.setUserData(new Mina(i,j,"images/siete.png",7));
+                    boton.setUserData(new Mina(i, j, "images/siete.png", 7));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -498,7 +527,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
@@ -509,10 +538,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
-                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                } else if (banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))) {
                                     banderasColocadas.remove(boton);
                                     Image icono = new Image("images/celda.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -525,7 +554,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 } else if (tablero[i][j] == 8) {
                     //Image icono = new Image("images/ocho.png");
                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                    boton.setUserData(new Mina(i,j,"images/ocho.png",8));
+                    boton.setUserData(new Mina(i, j, "images/ocho.png", 8));
                     boton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
@@ -536,7 +565,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     celdasPresionadas.add(boton);
                                     if (celdasPresionadas.size() == totalCeldas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
                                 }
@@ -547,10 +576,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
-                                        finalizarJuego(true,timer.stopTimer());
+                                        finalizarJuego(true, timer.stopTimer());
                                         stageTablero.close();
                                     }
-                                }else if(banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))){
+                                } else if (banderasColocadas.contains(boton) && (!celdasPresionadas.contains(boton))) {
                                     banderasColocadas.remove(boton);
                                     Image icono = new Image("images/celda.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -565,15 +594,13 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 }
             }
         }
-        
-        for (int i = 0; i < celdas.size(); i++) {
+
+        /*for (int i = 0; i < celdas.size(); i++) {
             if((i>=8)&&(i%10 == 0)){
-                System.out.print("\n  "+((Mina)(celdas.get(i).getUserData())).getTipo());
+                System.out.print("TE\n  "+((Mina)(celdas.get(i).getUserData())).getTipo());
             }else
-                System.out.print("  "+((Mina)(celdas.get(i).getUserData())).getTipo());
-        }
-        
-//gridPaneTablero.setAlignment(Pos.CENTER);
+                System.out.print("TE  "+((Mina)(celdas.get(i).getUserData())).getTipo());
+        }*/
         gridPaneTablero.setLayoutX(10);
         gridPaneTablero.setLayoutY(10);
         hBox = new HBox();
@@ -593,60 +620,60 @@ public class FXMLJuegoBuscaminasController implements Initializable {
         timer = new Reloj(timeLabel);
         timer.startTimer();
     }
-    
-    public void vacioRecursivo(int n, int m,int totalX, int totalY){
-        int i=n,j=m;
-        System.out.println("Estoy en ["+i+"]["+j+"]");
+
+    public void vacioRecursivo(int n, int m, int totalX, int totalY) {
+        int i = n, j = m;
+        System.out.println("Estoy en [" + i + "][" + j + "]");
         if (tablero[i][j] != -1) {
             if ((i > 0) && (j > 0)) {
-                System.out.println("Estoy en ["+i+"]>0,["+j+"]>0");
+                System.out.println("Estoy en [" + i + "]>0,[" + j + "]>0");
                 if (tablero[i - 1][j - 1] == 0) {
-                    Button btn = celdas.get((i-1)*totalY+((j-1)));
-                    if(!celdasPresionadas.contains(btn)){
+                    Button btn = celdas.get((i - 1) * totalY + ((j - 1)));
+                    if (!celdasPresionadas.contains(btn)) {
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                             stageTablero.close();
                         }
-                        vacioRecursivo(i-1,j-1,totalX,totalY);
+                        vacioRecursivo(i - 1, j - 1, totalX, totalY);
                     }
-                }else if((tablero[i - 1][j - 1] != 0)&&(tablero[i - 1][j - 1] != -1)){
-                    Button btn = celdas.get((i-1)*totalY+((j-1)));
-                    if(!celdasPresionadas.contains(btn)){
-                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                } else if ((tablero[i - 1][j - 1] != 0) && (tablero[i - 1][j - 1] != -1)) {
+                    Button btn = celdas.get((i - 1) * totalY + ((j - 1)));
+                    if (!celdasPresionadas.contains(btn)) {
+                        Image icono = new Image(((Mina) btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                             stageTablero.close();
                         }
                     }
                 }
             }
             if (i > 0) {
-                System.out.println("Estoy en ["+i+"]>0");
-                if (tablero[i - 1][j] == 0){
-                    Button btn = celdas.get((i-1)*totalY+((j)));
-                    if(!celdasPresionadas.contains(btn)){
+                System.out.println("Estoy en [" + i + "]>0");
+                if (tablero[i - 1][j] == 0) {
+                    Button btn = celdas.get((i - 1) * totalY + ((j)));
+                    if (!celdasPresionadas.contains(btn)) {
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                             stageTablero.close();
                         }
-                        vacioRecursivo(i-1,j,totalX,totalY);
+                        vacioRecursivo(i - 1, j, totalX, totalY);
                     }
-                }else if((tablero[i - 1][j] != 0)&&(tablero[i - 1][j] != -1)){
-                    Button btn = celdas.get((i-1)*totalY+((j)));
-                    if(!celdasPresionadas.contains(btn)){
-                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                } else if ((tablero[i - 1][j] != 0) && (tablero[i - 1][j] != -1)) {
+                    Button btn = celdas.get((i - 1) * totalY + ((j)));
+                    if (!celdasPresionadas.contains(btn)) {
+                        Image icono = new Image(((Mina) btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                             stageTablero.close();
                         }
                     }
@@ -654,27 +681,27 @@ public class FXMLJuegoBuscaminasController implements Initializable {
             }
 
             if ((i > 0) && (j < (totalY))) {
-                System.out.println("Estoy en ["+i+"]>0,["+j+"]<["+totalY+"]");
+                System.out.println("Estoy en [" + i + "]>0,[" + j + "]<[" + totalY + "]");
                 if (tablero[i - 1][j + 1] == 0) {
-                    Button btn = celdas.get((i-1)*totalY+((j+1)));
-                    if(!celdasPresionadas.contains(btn)){
+                    Button btn = celdas.get((i - 1) * totalY + ((j + 1)));
+                    if (!celdasPresionadas.contains(btn)) {
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                             stageTablero.close();
                         }
-                        vacioRecursivo(i-1,j+1,totalX,totalY);
+                        vacioRecursivo(i - 1, j + 1, totalX, totalY);
                     }
-                }else if((tablero[i - 1][j+1] != 0)&&(tablero[i - 1][j+1] != -1)){
-                    Button btn = celdas.get(((i-1)*totalY+((j+1))));
-                    if(!celdasPresionadas.contains(btn)){
-                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                } else if ((tablero[i - 1][j + 1] != 0) && (tablero[i - 1][j + 1] != -1)) {
+                    Button btn = celdas.get(((i - 1) * totalY + ((j + 1))));
+                    if (!celdasPresionadas.contains(btn)) {
+                        Image icono = new Image(((Mina) btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                             stageTablero.close();
                         }
                     }
@@ -682,55 +709,55 @@ public class FXMLJuegoBuscaminasController implements Initializable {
             }
 
             if ((j < (totalY))) {
-                System.out.println("Estoy en ["+j+"]<["+totalY+"]");
+                System.out.println("Estoy en [" + j + "]<[" + totalY + "]");
                 if (tablero[i][j + 1] == 0) {
-                    Button btn = celdas.get((i)*totalY+((j+1)));
-                    if(!celdasPresionadas.contains(btn)){
+                    Button btn = celdas.get((i) * totalY + ((j + 1)));
+                    if (!celdasPresionadas.contains(btn)) {
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                             stageTablero.close();
                         }
-                        vacioRecursivo(i,j+1,totalX,totalY);
+                        vacioRecursivo(i, j + 1, totalX, totalY);
                     }
-                }else if((tablero[i][j+1] != 0)&&(tablero[i][j+1] != -1)){
-                    Button btn = celdas.get((i)*totalY+((j+1)));
-                    if(!celdasPresionadas.contains(btn)){
-                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                } else if ((tablero[i][j + 1] != 0) && (tablero[i][j + 1] != -1)) {
+                    Button btn = celdas.get((i) * totalY + ((j + 1)));
+                    if (!celdasPresionadas.contains(btn)) {
+                        Image icono = new Image(((Mina) btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                             stageTablero.close();
                         }
                     }
                 }
             }
-            
+
             if ((j < (totalY)) && (i < (totalX))) {
-                System.out.println("Estoy en ["+i+"]<"+totalX+",["+j+"]<["+totalY+"]");
+                System.out.println("Estoy en [" + i + "]<" + totalX + ",[" + j + "]<[" + totalY + "]");
                 if (tablero[i + 1][j + 1] == 0) {
-                    Button btn = celdas.get((i+1)*totalY+((j+1)));
-                    if(!celdasPresionadas.contains(btn)){
+                    Button btn = celdas.get((i + 1) * totalY + ((j + 1)));
+                    if (!celdasPresionadas.contains(btn)) {
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                             stageTablero.close();
                         }
-                        vacioRecursivo(i+1,j+1,totalX,totalY);
+                        vacioRecursivo(i + 1, j + 1, totalX, totalY);
                     }
-                }else if((tablero[i+1][j+1] != 0)&&(tablero[i+1][j+1] != -1)){
-                    Button btn = celdas.get((i+1)*totalY+((j+1)));
-                    if(!celdasPresionadas.contains(btn)){
-                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                } else if ((tablero[i + 1][j + 1] != 0) && (tablero[i + 1][j + 1] != -1)) {
+                    Button btn = celdas.get((i + 1) * totalY + ((j + 1)));
+                    if (!celdasPresionadas.contains(btn)) {
+                        Image icono = new Image(((Mina) btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                             stageTablero.close();
                         }
                     }
@@ -738,165 +765,88 @@ public class FXMLJuegoBuscaminasController implements Initializable {
             }
 
             if ((i < (totalX))) {
-                System.out.println("Estoy en ["+i+"]<"+totalX+"]");
+                System.out.println("Estoy en [" + i + "]<" + totalX + "]");
                 if (tablero[i + 1][j] == 0) {
-                    Button btn = celdas.get((i+1)*totalY+((j)));
-                    if(!celdasPresionadas.contains(btn)){
+                    Button btn = celdas.get((i + 1) * totalY + ((j)));
+                    if (!celdasPresionadas.contains(btn)) {
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                         }
-                        vacioRecursivo(i+1,j,totalX,totalY);
+                        vacioRecursivo(i + 1, j, totalX, totalY);
                     }
-                }else if((tablero[i+1][j] != 0)&&(tablero[i+1][j] != -1)){
-                    Button btn = celdas.get((i+1)*totalY+((j)));
-                    if(!celdasPresionadas.contains(btn)){
-                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                } else if ((tablero[i + 1][j] != 0) && (tablero[i + 1][j] != -1)) {
+                    Button btn = celdas.get((i + 1) * totalY + ((j)));
+                    if (!celdasPresionadas.contains(btn)) {
+                        Image icono = new Image(((Mina) btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                         }
                     }
                 }
             }
 
             if ((j > 0) && (i < (totalX))) {
-                System.out.println("Estoy en ["+i+"]<"+totalX+",["+j+"]>0");
+                System.out.println("Estoy en [" + i + "]<" + totalX + ",[" + j + "]>0");
                 if (tablero[i + 1][j - 1] == 0) {
-                    Button btn = celdas.get((i+1)*totalY+((j-1)));
-                    if(!celdasPresionadas.contains(btn)){
+                    Button btn = celdas.get((i + 1) * totalY + ((j - 1)));
+                    if (!celdasPresionadas.contains(btn)) {
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                         }
-                        vacioRecursivo(i+1,j-1,totalX,totalY);
+                        vacioRecursivo(i + 1, j - 1, totalX, totalY);
                     }
-                }else if((tablero[i+1][j-1] != 0)&&(tablero[i+1][j-1] != -1)){
-                    Button btn = celdas.get((i+1)*totalY+((j-1)));
-                    if(!celdasPresionadas.contains(btn)){
-                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                } else if ((tablero[i + 1][j - 1] != 0) && (tablero[i + 1][j - 1] != -1)) {
+                    Button btn = celdas.get((i + 1) * totalY + ((j - 1)));
+                    if (!celdasPresionadas.contains(btn)) {
+                        Image icono = new Image(((Mina) btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                         }
                     }
                 }
             }
 
             if ((j > 0)) {
-                System.out.println("Estoy en ["+j+"]>0");
+                System.out.println("Estoy en [" + j + "]>0");
                 if (tablero[i][j - 1] == 0) {
-                    Button btn = celdas.get((i)*totalY+((j-1)));
-                    if(!celdasPresionadas.contains(btn)){
+                    Button btn = celdas.get((i) * totalY + ((j - 1)));
+                    if (!celdasPresionadas.contains(btn)) {
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                         }
-                        vacioRecursivo(i,j-1,totalX,totalY);
+                        vacioRecursivo(i, j - 1, totalX, totalY);
                     }
-                }else if((tablero[i][j-1] != 0)&&(tablero[i][j-1] != -1)){
-                    Button btn = celdas.get((i)*totalY+((j-1)));
-                    if(!celdasPresionadas.contains(btn)){
-                        Image icono = new Image(((Mina)btn.getUserData()).getTipo());
+                } else if ((tablero[i][j - 1] != 0) && (tablero[i][j - 1] != -1)) {
+                    Button btn = celdas.get((i) * totalY + ((j - 1)));
+                    if (!celdasPresionadas.contains(btn)) {
+                        Image icono = new Image(((Mina) btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
-                        if(celdasPresionadas.size() == totalCeldas){
-                            finalizarJuego(true,timer.stopTimer());
+                        if (celdasPresionadas.size() == totalCeldas) {
+                            finalizarJuego(true, timer.stopTimer());
                         }
                     }
                 }
             }
         }
-        return;
-    }
-    
-    public int[][] crearTablero(int i, int j) {
-        int[][] tablero = new int[i][j];
-        int contadorMina = 0;
-        for (int k = 0; k < i; k++) {
-            for (int l = 0; l < j; l++) {
-                tablero[k][l] = -5;
-            }
-        }
-        for (int k = 0; k < ((j == 9) ? 10 : ((j == 16) ? 40 : ((j == 30)) ? 99 : 10)); k++) {
-            int randomX = (int) (Math.random() * i);
-            int randomY = (int) (Math.random() * j);
-            if (tablero[randomX][randomY] == -5) {
-                System.out.println("Mina en la posicion,[" + randomX + "][" + randomY + "]");
-                tablero[randomX][randomY] = -1;
-            } else {
-                k--;
-            }
-        }
-
-        for (int k = 0; k < i; k++) {//fila
-            for (int l = 0; l < j; l++) {//col
-                if (tablero[k][l] != -1) {
-                    if ((k > 0) && (l > 0)) {
-                        if (tablero[k - 1][l - 1] == -1) {
-                            contadorMina++;
-                        }
-                    }
-                    if (k > 0) {
-                        if (tablero[k - 1][l] == -1) {
-                            contadorMina++;
-                        }
-                    }
-
-                    if ((k > 0) && (l < (j - 1))) {
-                        if (tablero[k - 1][l + 1] == -1) {
-                            contadorMina++;
-                        }
-                    }
-
-                    if ((l < (j - 1))) {
-                        if (tablero[k][l + 1] == -1) {
-                            contadorMina++;
-                        }
-                    }
-                    if ((l < (j - 1)) && (k < (i - 1))) {
-                        if (tablero[k + 1][l + 1] == -1) {
-                            contadorMina++;
-                        }
-                    }
-
-                    if ((k < (i - 1))) {
-                        if (tablero[k + 1][l] == -1) {
-                            contadorMina++;
-                        }
-                    }
-
-                    if ((l > 0) && (k < (i - 1))) {
-                        if (tablero[k + 1][l - 1] == -1) {
-                            contadorMina++;
-                        }
-                    }
-
-                    if ((l > 0)) {
-                        if (tablero[k][l - 1] == -1) {
-                            contadorMina++;
-                        }
-                    }
-
-                    tablero[k][l] = contadorMina;
-                    contadorMina = 0;
-                }
-            }
-        }
-        return tablero;
     }
 
     public void finalizarJuego(boolean isWinner, String tiempo) {
-        if(isWinner){
-            Label labelGameOver = new Label("¡Winner! en "+tiempo);
+        if (isWinner) {
+            Label labelGameOver = new Label("¡Winner! en " + tiempo);
             labelGameOver.setFont(new Font("Bauhaus 93", 32));
             labelGameOver.setTextFill(Paint.valueOf("BLACK"));
             labelGameOver.setBackground(new Background(new BackgroundImage(new Image("images/gamOver.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -929,8 +879,8 @@ public class FXMLJuegoBuscaminasController implements Initializable {
             } catch (IOException ex) {
                 Logger.getLogger(FXMLJuegoBuscaminasController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }else{
-            Label labelGameOver = new Label("Game Over en "+tiempo);
+        } else {
+            Label labelGameOver = new Label("Game Over en " + tiempo);
             labelGameOver.setFont(new Font("Bauhaus 93", 32));
             labelGameOver.setTextFill(Paint.valueOf("BLACK"));
             labelGameOver.setBackground(new Background(new BackgroundImage(new Image("images/gamOver.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -965,5 +915,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
             }
         }
         ((Stage) anchorPaneTablero.getScene().getWindow()).close();
+        try {
+            cl.close();
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLJuegoBuscaminasController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
