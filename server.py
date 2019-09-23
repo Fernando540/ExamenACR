@@ -84,14 +84,26 @@ def mandaTablero():
 	print("Done...")
 
 def mandaScoreboard():
-	return 0
+
+	print("Done...")
 	
+def saveWinner():
+	print("Guardando score...")
+	f = open('Records.txt', 'a')
+	data = ss.recv(1024)
+	print(data)
+	msg = data.decode("utf-8")
+	f.write(msg+'\n')
+	f.close()
+	print("Done!")
+
 
 #---------------------------------------------------------------------------------
 
 switcher = {
 	"0": mandaTablero,
-	"1": mandaScoreboard
+	"1": mandaScoreboard,
+	"2": saveWinner
 }
 
 def opciones(argument):
@@ -115,22 +127,27 @@ f = open('Records.txt', 'a')
 f.write('Fernando: 00:09:22\n')
 f.close()
 """
+
 while True:
 	ss, address = s.accept()
 	print(f"Conexión desde {address} se ha establecido!")
-	print("Esperando instrucción...")
+	mandaTablero()
 	#ss.send(bytes("HOLA QUE TAL!"+'\n',"utf-8"))
 	#cadena = input("Escribe algo para enviar ('q' para salir)\n")
-	data = ss.recv(1024)
-	if not data:
-		break
-	print(data)
+	while True:
+		print("Esperando instrucción...")
+		datos = ss.recv(1024)
+		print(datos)
+		opt = datos.decode("utf-8")
+		if(opt=="-1"):
+			break
+		else:
+			print(f"Ejecutando opción: {opt}")
+			opciones(opt)
+	
 	#num, = struct.unpack('<i',data)
 	#print(num)
-	msg = data.decode("utf-8")
-	print(f"Ejecutando opción: {msg}")
-	opciones(msg)
-	print("Instrucción OK!")
+	
 	"""
 	if(msg=="1"):
 		print("Principiante")

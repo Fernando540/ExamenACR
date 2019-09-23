@@ -74,6 +74,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
     private Socket cl;
     private BufferedReader br;
     private PrintWriter writer;
+    private String dif;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -95,6 +96,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
         cl = jugador.getSocket();
         br = jugador.getBr();
         writer = jugador.getWriter();
+        dif = jugador.getDificultad();
 
         stageTablero.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -110,7 +112,6 @@ public class FXMLJuegoBuscaminasController implements Initializable {
         System.out.println(jugador.getDificultad());
         System.out.println(jugador.getInicioT().toString());
 
-        String dif = "";
         switch (jugador.getDificultad()) {
             case "Principiante":
                 System.out.println("Se ha iniciado el modo principiante");
@@ -118,26 +119,25 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 columnas = 9;
                 totalMinas = 10;
                 tablero = new int[9][9];
-                dif="1";
+                writer.write("1");
                 break;
             case "Intermedio":
                 System.out.println("Se ha iniciado el modo intermedio");
                 filas = 16;
                 columnas = 16;
                 totalMinas = 40;
-                dif="2";
+                writer.write("2");
                 break;
             case "Experto":
                 System.out.println("Se ha iniciado el modo experto");
                 filas = 16;
                 columnas = 30;
                 totalMinas = 99;
-                dif="3";
+                writer.write("3");
                 break;
             default:
                 break;
         }
-        writer.write(dif);
         writer.flush();
         tablero = new int[filas][columnas];
 
@@ -269,7 +269,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true, timer.stopTimer());
@@ -307,7 +307,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true, timer.stopTimer());
@@ -345,7 +345,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true, timer.stopTimer());
@@ -383,7 +383,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true, timer.stopTimer());
@@ -421,7 +421,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true, timer.stopTimer());
@@ -459,7 +459,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true, timer.stopTimer());
@@ -497,7 +497,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true, timer.stopTimer());
@@ -535,7 +535,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true, timer.stopTimer());
@@ -573,7 +573,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                 if (!banderasColocadas.contains(boton)) {
                                     Image icono = new Image("images/bandera.png");
                                     boton.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                                    banderasColocadas.add(boton);
+                                    //banderasColocadas.add(boton);
                                     if (banderasColocadas.size() == totalMinas) {
                                         System.out.println("GANASTEEEE");
                                         finalizarJuego(true, timer.stopTimer());
@@ -847,6 +847,10 @@ public class FXMLJuegoBuscaminasController implements Initializable {
     public void finalizarJuego(boolean isWinner, String tiempo) {
         if (isWinner) {
             Label labelGameOver = new Label("¡Winner! en " + tiempo);
+            writer.write("2");
+            writer.flush();
+            writer.write(jugador.getNombre()+" - "+tiempo+" - "+jugador.getDificultad());
+            writer.flush();
             labelGameOver.setFont(new Font("Bauhaus 93", 32));
             labelGameOver.setTextFill(Paint.valueOf("BLACK"));
             labelGameOver.setBackground(new Background(new BackgroundImage(new Image("images/gamOver.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -915,7 +919,11 @@ public class FXMLJuegoBuscaminasController implements Initializable {
             }
         }
         ((Stage) anchorPaneTablero.getScene().getWindow()).close();
+        writer.write("-1");
+        writer.flush();
         try {
+            br.close();
+            writer.close();
             cl.close();
         } catch (IOException ex) {
             Logger.getLogger(FXMLJuegoBuscaminasController.class.getName()).log(Level.SEVERE, null, ex);

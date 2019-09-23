@@ -50,7 +50,16 @@ public class FXMLDocumentController implements Initializable {
         list.add("Intermedio");
         list.add("Experto");
         comboBoxNivel.setItems(list);
-        
+        while(cl==null){
+            try {
+                conectar();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private void conectar() throws InterruptedException{
         int pto = 1234;
         String host = "127.0.0.1";
         try {
@@ -58,10 +67,11 @@ public class FXMLDocumentController implements Initializable {
             br = new BufferedReader(new InputStreamReader(cl.getInputStream()));
             writer = new PrintWriter(cl.getOutputStream(), true);   
         } catch (IOException ex) {
-            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("servidor no encontrado... reintentando en 3 segundos...");
+            Thread.sleep(3000);
         }
     }
-
     @FXML
     public void jugar(ActionEvent e) throws IOException{
         if((!textFieldNombreUsuario.getText().trim().isEmpty())&&(comboBoxNivel.getValue()!=null)){
@@ -81,8 +91,8 @@ public class FXMLDocumentController implements Initializable {
             stage.setUserData(usuario);
             stage.show();
             ((Stage)(anchorPanePrincipal.getScene().getWindow())).close();
-            writer.write("0");
-            writer.flush();
+            //writer.write("0");
+            //writer.flush();
         }else{
             Label labelAlerta = new Label("ERROR: Ingresa un nombre de usuario.");
             Scene esceneAlerta = new Scene(labelAlerta);
