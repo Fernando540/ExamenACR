@@ -35,10 +35,6 @@ import javafx.stage.StageStyle;
 public class FXMLDocumentController implements Initializable {
 
     @FXML
-    private Button buttonJugar;
-    @FXML
-    private Button buttonRecords;
-    @FXML
     private ComboBox comboBoxNivel;
     @FXML
     private TextField textFieldNombreUsuario;
@@ -135,21 +131,42 @@ public class FXMLDocumentController implements Initializable {
                     break;
             }
             writer.flush();
-            boolean seguir=true;
+            boolean seguir = true;
             String in;
+            String content = "";
             while (seguir) {
-                in=br.readLine();
-                if(in.equals("-1")){
-                    seguir=false;
-                }else{
-                    System.out.println(in);
+                in = br.readLine();
+                if (in.equals("-1")) {
+                    seguir = false;
+                } else {
+                    content = content + in + "\n";
+                    //System.out.println(in);
                 }
             }
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Tablero de Resultados");
-            alert.setHeaderText(dif);
-            //alert.setContentText(br.readLine());
-            //alert.showAndWait();
+            alert.setHeaderText("Modalidad: " + dif);
+            alert.setContentText(content);
+            alert.showAndWait();
+
+            try {
+                //Load second scene
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Records.fxml"));
+                Parent root = loader.load();
+
+                //Get controller of scene2
+                RecordsController records = loader.getController();
+                //Pass whatever data you want. You can have multiple method calls here
+                //records.transferMessage();
+
+                //Show scene 2 in new window            
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.setTitle("Marcadores");
+                stage.show();
+            } catch (IOException ex) {
+                System.err.println(ex);
+            }
         }
     }
 
