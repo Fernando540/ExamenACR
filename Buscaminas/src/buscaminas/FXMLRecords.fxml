@@ -6,10 +6,9 @@
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="357.0" prefWidth="458.0" style="-fx-background-color: #093c76;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="buscaminas.FXMLRecordsController">
+<AnchorPane id="AnchorPane" prefHeight="357.0" prefWidth="458.0" style="-fx-background-color: #093c76;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="buscaminas.FXMLRecordsController">
    <children>
-      <Label layoutX="193.0" layoutY="14.0" text="Records" textFill="WHITE">
+      <Label layoutX="174.0" layoutY="14.0" text="Records" textFill="WHITE">
          <font>
             <Font name="Bauhaus 93" size="31.0" />
          </font>
@@ -57,10 +56,5 @@
          </textFill>
       </Label>
       <Label layoutX="56.0" layoutY="112.0" />
-      <Label layoutX="156.0" layoutY="112.0" text="Label" />
-      <Label layoutX="56.0" layoutY="206.0" text="Label" />
-      <Label layoutX="156.0" layoutY="206.0" text="Label" />
-      <Label layoutX="56.0" layoutY="295.0" text="Label" />
-      <Label layoutX="156.0" layoutY="295.0" text="Label" />
    </children>
 </AnchorPane>

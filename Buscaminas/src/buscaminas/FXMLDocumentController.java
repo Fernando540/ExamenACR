@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package buscaminas;
 
 import java.io.BufferedReader;
@@ -23,6 +18,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -37,7 +33,7 @@ import javafx.stage.StageStyle;
  * @author Brandon
  */
 public class FXMLDocumentController implements Initializable {
-    
+
     @FXML
     private Button buttonJugar;
     @FXML
@@ -48,11 +44,11 @@ public class FXMLDocumentController implements Initializable {
     private TextField textFieldNombreUsuario;
     @FXML
     private AnchorPane anchorPanePrincipal;
-    
+
     private Socket cl;
     private BufferedReader br;
     private PrintWriter writer;
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ObservableList<String> list = FXCollections.observableArrayList();
@@ -60,7 +56,7 @@ public class FXMLDocumentController implements Initializable {
         list.add("Intermedio");
         list.add("Experto");
         comboBoxNivel.setItems(list);
-        while(cl==null){
+        while (cl == null) {
             try {
                 conectar();
             } catch (InterruptedException ex) {
@@ -70,10 +66,12 @@ public class FXMLDocumentController implements Initializable {
     }
 
     @FXML
-    public void jugar(ActionEvent e) throws IOException{
-        if((!textFieldNombreUsuario.getText().trim().isEmpty())&&(comboBoxNivel.getValue()!=null)){
+    public void jugar(ActionEvent e) throws IOException {
+        if ((!textFieldNombreUsuario.getText().trim().isEmpty()) && (comboBoxNivel.getValue() != null)) {
+            writer.write("0");
+            writer.flush();
             System.out.println("Accedio");
-            Usuario usuario = new Usuario(textFieldNombreUsuario.getText(),(String)comboBoxNivel.getValue(),new Date(),cl,br,writer);
+            Usuario usuario = new Usuario(textFieldNombreUsuario.getText(), (String) comboBoxNivel.getValue(), new Date(), cl, br, writer);
             Parent root = FXMLLoader.load(getClass().getResource("FXMLJuegoBuscaminas.fxml"));
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -87,8 +85,8 @@ public class FXMLDocumentController implements Initializable {
             stage.setResizable(false);
             stage.setUserData(usuario);
             stage.show();
-            ((Stage)(anchorPanePrincipal.getScene().getWindow())).close();
-        }else{
+            ((Stage) (anchorPanePrincipal.getScene().getWindow())).close();
+        } else {
             Label labelAlerta = new Label("ERROR: Ingresa un nombre de usuario.");
             Scene esceneAlerta = new Scene(labelAlerta);
             Stage stageAlerta = new Stage();
@@ -99,20 +97,63 @@ public class FXMLDocumentController implements Initializable {
             stageAlerta.setWidth(250);
             stageAlerta.show();
             try {
-                Thread.sleep(1*1000);
+                Thread.sleep(1 * 1000);
             } catch (InterruptedException ex) {
                 stageAlerta.close();
             }
             stageAlerta.close();
         }
     }
-    
+
     @FXML
-    public void showScores(ActionEvent e) throws IOException{
-        
+    public void showScores(ActionEvent e) throws IOException {
+        if (comboBoxNivel.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Atención");
+            alert.setHeaderText("Selecciona una dificultad, por favor");
+            alert.showAndWait();
+        } else {
+            System.out.print("Solicitando...");
+            writer.write("1");
+            writer.flush();
+            String dif = comboBoxNivel.getValue().toString();
+            //System.out.println(dif);
+            switch (dif) {
+                case "Principiante":
+                    System.out.println("Scores principiante");
+                    writer.write("1");
+                    break;
+                case "Intermedio":
+                    System.out.println("Scores intermedio");
+                    writer.write("2");
+                    break;
+                case "Experto":
+                    System.out.println("Scores experto");
+                    writer.write("3");
+                    break;
+                default:
+                    break;
+            }
+            writer.flush();
+            boolean seguir=true;
+            String in;
+            while (seguir) {
+                in=br.readLine();
+                if(in.equals("-1")){
+                    seguir=false;
+                }else{
+                    System.out.println(in);
+                }
+            }
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Tablero de Resultados");
+            alert.setHeaderText(dif);
+            //alert.setContentText(br.readLine());
+            //alert.showAndWait();
+        }
     }
-    
-    public void conectar() throws InterruptedException{
+
+    public void conectar() throws InterruptedException {
         int pto = 1234;
         String host = "127.0.0.1";
         try {
@@ -122,7 +163,7 @@ public class FXMLDocumentController implements Initializable {
         } catch (IOException ex) {
             System.out.println("Servidor no encontrado... Reintendando en 3 segundos");
             Thread.sleep(3000);
-        }   
+        }
     }
-    
+
 }

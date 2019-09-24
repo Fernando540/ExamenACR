@@ -79,7 +79,6 @@ public class FXMLJuegoBuscaminasController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }
 
     @FXML
@@ -853,27 +852,31 @@ public class FXMLJuegoBuscaminasController implements Initializable {
         }
     }
 
+    private void writeWinner(String tiempo) {
+        writer.write("2");
+        writer.flush();
+        String diff="";
+        switch (jugador.getDificultad()) {
+            case "Principiante":
+                diff = "1";
+                break;
+            case "Intermedio":
+                diff = "2";
+                break;
+            case "Experto":
+                diff = "3";
+                break;
+            default:
+                break;
+        }
+        writer.write(diff+tiempo + " - " + jugador.getNombre());
+        writer.flush();
+    }
+
     public void finalizarJuego(boolean isWinner, String tiempo) {
         if (isWinner) {
             Label labelGameOver = new Label("¡Winner! en " + tiempo);
-            writer.write("2");
-            writer.flush();
-            switch (jugador.getDificultad()) {
-                case "Principiante":
-                    writer.write("1");
-                    break;
-                case "Intermedio":
-                    writer.write("2");
-                    break;
-                case "Experto":
-                    writer.write("3");
-                    break;
-                default:
-                    break;
-            }
-            writer.flush();
-            writer.write(tiempo + " - " + jugador.getNombre());
-            writer.flush();
+            writeWinner(tiempo);
             labelGameOver.setFont(new Font("Bauhaus 93", 32));
             labelGameOver.setTextFill(Paint.valueOf("BLACK"));
             labelGameOver.setBackground(new Background(new BackgroundImage(new Image("images/gamOver.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -907,6 +910,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 Logger.getLogger(FXMLJuegoBuscaminasController.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
+            writeWinner(tiempo);
             Label labelGameOver = new Label("Game Over en " + tiempo);
             labelGameOver.setFont(new Font("Bauhaus 93", 32));
             labelGameOver.setTextFill(Paint.valueOf("BLACK"));

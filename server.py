@@ -83,28 +83,47 @@ def mandaTablero():
 
 	print("Done...")
 
-def mandaScoreboard():
-	return 0
-
 def saveWinner():
 	print("Guardando score...")
 	data = ss.recv(1024)
 	print(data)
 	msg = data.decode("utf-8")
-	if(msg=="1"):
-		f = open('Principiantes.txt', 'a')
+	if(msg[0]=='1'):
+		file = open('Principiantes.txt', 'a')
+		print("Abri princi")
 	else:
-		if(msg=="2"):
-			f = open('Intermedios.txt', 'a')
+		if(msg[0]=='2'):
+			file = open('Intermedios.txt', 'a')
+			print("Abri inter")
 		else:
-			f = open('Expertos.txt', 'a')
-	
-	data = ss.recv(1024)
-	print(data)
+			file = open('Expertos.txt', 'a')
+			print("Abri exp")
+
+	newStr=msg[1:]
+	print(f"nueva cadena: {newStr}")
+	file.write(newStr+'\n')
+	file.close()
+	print("Done!")
+
+
+def mandaScoreboard():
+	print("Mandando resultados de ",end=' ')
 	data = ss.recv(1024)
 	print(data)
 	msg = data.decode("utf-8")
-	f.write(msg+'\n')
+	if(msg=="1"):
+		f = open('Principiantes.txt', 'r')
+		print("principiantes...")
+	else:
+		if(msg[0]=="2"):
+			f = open('Intermedios.txt', 'r')
+			print("intermedios...")
+		else:
+			f = open('Expertos.txt', 'r')
+			print("expertos...")
+	for line in f: 
+		ss.send(bytes(line,"utf-8"))
+	ss.send(bytes("-1"+'\n',"utf-8"))
 	f.close()
 	print("Done!")
 
@@ -142,7 +161,6 @@ f.close()
 while True:
 	ss, address = s.accept()
 	print(f"Conexión desde {address} se ha establecido!")
-	mandaTablero()
 	
 	while True:
 		print("Esperando instrucción...")
