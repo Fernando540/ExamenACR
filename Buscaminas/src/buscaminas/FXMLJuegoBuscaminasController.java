@@ -590,6 +590,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 if (tablero[i - 1][j - 1] == 0) {
                     Button btn = celdas.get((i-1)*totalY+((j-1)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -602,6 +605,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 }else if((tablero[i - 1][j - 1] != 0)&&(tablero[i - 1][j - 1] != -1)){
                     Button btn = celdas.get((i-1)*totalY+((j-1)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image(((Mina)btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -619,6 +625,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 if (tablero[i - 1][j] == 0){
                     Button btn = celdas.get((i-1)*totalY+((j)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -631,6 +640,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 }else if((tablero[i - 1][j] != 0)&&(tablero[i - 1][j] != -1)){
                     Button btn = celdas.get((i-1)*totalY+((j)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image(((Mina)btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -648,6 +660,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 if (tablero[i - 1][j + 1] == 0) {
                     Button btn = celdas.get((i-1)*totalY+((j+1)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -660,6 +675,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 }else if((tablero[i - 1][j+1] != 0)&&(tablero[i - 1][j+1] != -1)){
                     Button btn = celdas.get(((i-1)*totalY+((j+1))));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image(((Mina)btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -677,6 +695,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 if (tablero[i][j + 1] == 0) {
                     Button btn = celdas.get((i)*totalY+((j+1)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -689,6 +710,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 }else if((tablero[i][j+1] != 0)&&(tablero[i][j+1] != -1)){
                     Button btn = celdas.get((i)*totalY+((j+1)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image(((Mina)btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -706,6 +730,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 if (tablero[i + 1][j + 1] == 0) {
                     Button btn = celdas.get((i+1)*totalY+((j+1)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -718,6 +745,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 }else if((tablero[i+1][j+1] != 0)&&(tablero[i+1][j+1] != -1)){
                     Button btn = celdas.get((i+1)*totalY+((j+1)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image(((Mina)btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -737,6 +767,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 if (tablero[i + 1][j] == 0) {
                     Button btn = celdas.get((i+1)*totalY+((j)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -748,6 +781,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 }else if((tablero[i+1][j] != 0)&&(tablero[i+1][j] != -1)){
                     Button btn = celdas.get((i+1)*totalY+((j)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image(((Mina)btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -764,6 +800,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 if (tablero[i + 1][j - 1] == 0) {
                     Button btn = celdas.get((i+1)*totalY+((j-1)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -775,6 +814,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 }else if((tablero[i+1][j-1] != 0)&&(tablero[i+1][j-1] != -1)){
                     Button btn = celdas.get((i+1)*totalY+((j-1)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image(((Mina)btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -791,6 +833,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 if (tablero[i][j - 1] == 0) {
                     Button btn = celdas.get((i)*totalY+((j-1)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image("images/vacio.png");
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
@@ -802,6 +847,9 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 }else if((tablero[i][j-1] != 0)&&(tablero[i][j-1] != -1)){
                     Button btn = celdas.get((i)*totalY+((j-1)));
                     if(!celdasPresionadas.contains(btn)){
+                        if (mbanderasColocadas.contains(btn)) {
+                            contarBanderas--;
+                        }
                         Image icono = new Image(((Mina)btn.getUserData()).getTipo());
                         btn.setBackground(new Background(new BackgroundImage(icono, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                         celdasPresionadas.add(btn);
