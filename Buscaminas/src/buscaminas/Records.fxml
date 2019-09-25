@@ -5,13 +5,14 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.LinearGradient?>
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 
 
-<VBox minHeight="700.0" prefHeight="700.0" prefWidth="386.0" style="-fx-background-color: #093c76;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="buscaminas.RecordsController">
+<VBox minHeight="700.0" minWidth="500.0" prefHeight="700.0" prefWidth="386.0" style="-fx-background-color: #093c76;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="buscaminas.RecordsController">
    <children>
       <BorderPane>
          <top>
@@ -22,77 +23,61 @@
             </Label>
          </top>
       </BorderPane>
-      <Label text="Principiante">
-         <font>
-            <Font name="Bauhaus 93" size="19.0" />
-         </font>
-         <textFill>
-            <LinearGradient endX="1.0" endY="1.0">
-               <stops>
-                  <Stop color="#00ff09" />
-                  <Stop color="WHITE" offset="1.0" />
-               </stops>
-            </LinearGradient>
-         </textFill>
+      <HBox alignment="TOP_CENTER" spacing="50.0">
+         <children>
+            <Label fx:id="lblPrin" disable="true" text="Principiante">
+               <font>
+                  <Font name="Bauhaus 93" size="19.0" />
+               </font>
+               <textFill>
+                  <LinearGradient endX="1.0" endY="1.0">
+                     <stops>
+                        <Stop color="#00ff09" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </textFill>
+            </Label>
+            <Label fx:id="lblInt" disable="true" text="Intermedio">
+               <font>
+                  <Font name="Bauhaus 93" size="19.0" />
+               </font>
+               <textFill>
+                  <LinearGradient endX="1.0" endY="1.0">
+                     <stops>
+                        <Stop color="#fffd00" />
+                        <Stop color="#fffd00" offset="0.007662835249042145" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </textFill>
+            </Label>
+            <Label fx:id="lblExp" disable="true" text="Experto">
+               <font>
+                  <Font name="Bauhaus 93" size="19.0" />
+               </font>
+               <textFill>
+                  <LinearGradient endX="1.0" endY="1.0">
+                     <stops>
+                        <Stop color="#fffd00" />
+                        <Stop color="#ff0400" offset="0.007662835249042145" />
+                        <Stop color="WHITE" offset="0.8797250859106529" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </textFill>
+            </Label>
+         </children>
          <VBox.margin>
-            <Insets bottom="10.0" top="20.0" />
+            <Insets bottom="20.0" top="10.0" />
          </VBox.margin>
-      </Label>
-      <TableView minHeight="150.0">
+      </HBox>
+      <TableView fx:id="tablaScores" maxHeight="1.7976931348623157E308" minHeight="300.0" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn prefWidth="98.0" text="Fecha" />
-          <TableColumn prefWidth="105.0" text="Tiempo" />
-          <TableColumn prefWidth="162.0" text="Nombre" />
+          <TableColumn fx:id="colTime" editable="false" prefWidth="105.0" text="Tiempo" />
+          <TableColumn fx:id="colName" editable="false" prefWidth="176.0" text="Nombre" />
+            <TableColumn fx:id="colDate" editable="false" prefWidth="198.0" text="Fecha" />
         </columns>
-      </TableView>
-      <Label text="Intermedio">
-         <font>
-            <Font name="Bauhaus 93" size="19.0" />
-         </font>
-         <textFill>
-            <LinearGradient endX="1.0" endY="1.0">
-               <stops>
-                  <Stop color="#fffd00" />
-                  <Stop color="#fffd00" offset="0.007662835249042145" />
-                  <Stop color="WHITE" offset="1.0" />
-               </stops>
-            </LinearGradient>
-         </textFill>
-         <VBox.margin>
-            <Insets bottom="10.0" top="20.0" />
-         </VBox.margin>
-      </Label>
-      <TableView minHeight="150.0">
-         <columns>
-            <TableColumn prefWidth="98.0" text="Fecha" />
-            <TableColumn prefWidth="105.0" text="Tiempo" />
-            <TableColumn prefWidth="162.0" text="Nombre" />
-         </columns>
-      </TableView>
-      <Label text="Experto">
-         <font>
-            <Font name="Bauhaus 93" size="19.0" />
-         </font>
-         <textFill>
-            <LinearGradient endX="1.0" endY="1.0">
-               <stops>
-                  <Stop color="#fffd00" />
-                  <Stop color="#ff0400" offset="0.007662835249042145" />
-                  <Stop color="WHITE" offset="0.8797250859106529" />
-                  <Stop color="WHITE" offset="1.0" />
-               </stops>
-            </LinearGradient>
-         </textFill>
-         <VBox.margin>
-            <Insets bottom="10.0" top="20.0" />
-         </VBox.margin>
-      </Label>
-      <TableView minHeight="150.0">
-         <columns>
-            <TableColumn prefWidth="98.0" text="Fecha" />
-            <TableColumn prefWidth="105.0" text="Tiempo" />
-            <TableColumn prefWidth="162.0" text="Nombre" />
-         </columns>
       </TableView>
    </children>
    <padding>

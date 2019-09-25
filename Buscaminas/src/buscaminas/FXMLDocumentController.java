@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URL;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +19,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -63,11 +62,11 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     public void jugar(ActionEvent e) throws IOException {
-        if ((!textFieldNombreUsuario.getText().trim().isEmpty()) && (comboBoxNivel.getValue() != null)) {
+        if ((!textFieldNombreUsuario.getText().trim().isEmpty()) && (comboBoxNivel.getValue() != null) && !textFieldNombreUsuario.getText().contains("/")) {
             writer.write("0");
             writer.flush();
             System.out.println("Accedio");
-            Usuario usuario = new Usuario(textFieldNombreUsuario.getText(), (String) comboBoxNivel.getValue(), new Date(), cl, br, writer);
+            Usuario usuario = new Usuario(textFieldNombreUsuario.getText(), (String) comboBoxNivel.getValue(), LocalDate.now(), cl, br, writer);
             Parent root = FXMLLoader.load(getClass().getResource("FXMLJuegoBuscaminas.fxml"));
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -109,60 +108,72 @@ public class FXMLDocumentController implements Initializable {
             alert.setHeaderText("Selecciona una dificultad, por favor");
             alert.showAndWait();
         } else {
-            System.out.print("Solicitando...");
-            writer.write("1");
-            writer.flush();
-            String dif = comboBoxNivel.getValue().toString();
-            //System.out.println(dif);
-            switch (dif) {
-                case "Principiante":
-                    System.out.println("Scores principiante");
-                    writer.write("1");
-                    break;
-                case "Intermedio":
-                    System.out.println("Scores intermedio");
-                    writer.write("2");
-                    break;
-                case "Experto":
-                    System.out.println("Scores experto");
-                    writer.write("3");
-                    break;
-                default:
-                    break;
-            }
-            writer.flush();
-            boolean seguir = true;
-            String in;
-            String content = "";
-            while (seguir) {
-                in = br.readLine();
-                if (in.equals("-1")) {
-                    seguir = false;
-                } else {
-                    content = content + in + "\n";
-                    //System.out.println(in);
-                }
-            }
+            /*
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Tablero de Resultados");
             alert.setHeaderText("Modalidad: " + dif);
             alert.setContentText(content);
-            alert.showAndWait();
+            alert.showAndWait();*/
 
             try {
-                //Load second scene
+                //Se carga la segunda escena
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("Records.fxml"));
                 Parent root = loader.load();
 
-                //Get controller of scene2
-                RecordsController records = loader.getController();
-                //Pass whatever data you want. You can have multiple method calls here
-                //records.transferMessage();
+                //Creamos objeto Controller el cual usaremos para invocar los metdos necesarios y así pasar información
+                RecordsController records = (RecordsController) loader.getController();
+                records.iniciaTabla();
+                
+                System.out.print("Solicitando...");
+                writer.write("1");
+                writer.flush();
+                String dif = comboBoxNivel.getValue().toString();
+                int difi = 0;
+                switch (dif) {
+                    case "Principiante":
+                        System.out.println("Scores principiante");
+                        writer.write("1");
+                        difi = 1;
+                        break;
+                    case "Intermedio":
+                        System.out.println("Scores intermedio");
+                        writer.write("2");
+                        difi = 2;
+                        break;
+                    case "Experto":
+                        System.out.println("Scores experto");
+                        writer.write("3");
+                        difi = 3;
+                        break;
+                    default:
+                        break;
+                }
+                writer.flush();
+                records.setDifi(difi);
+                
+                boolean seguir = true;
+                String in;
+                while (seguir) {
+                    in = br.readLine();
+                    if (in.equals("-1")) {
+                        seguir = false;
+                    } else {
+                        String[] splitted = in.split("/");
+                        System.out.println(splitted[0]);
+                        System.out.println(splitted[1]);
+                        System.out.println(splitted[2]);
+                        records.addWinner(new Usuario(splitted[0],splitted[1],splitted[2]));
+                        /*for (String celda : splitted) {
+                        System.out.println(celda);
+                    }*/
+                    }
+                }
 
-                //Show scene 2 in new window            
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));
-                stage.setTitle("Marcadores");
+                stage.setTitle("Tabla de Resultados");
+                Image icono = new Image("images/titleBuscIcon.png");
+                stage.getIcons().add(icono);
                 stage.show();
             } catch (IOException ex) {
                 System.err.println(ex);

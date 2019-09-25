@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -852,7 +853,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
         }
     }
 
-    private void writeWinner(String tiempo) {
+    private void writeWinner() {
         writer.write("2");
         writer.flush();
         String diff="";
@@ -869,14 +870,18 @@ public class FXMLJuegoBuscaminasController implements Initializable {
             default:
                 break;
         }
-        writer.write(diff+tiempo + " - " + jugador.getNombre());
+        writer.write(diff+jugador.getTiempo()+ "/" + jugador.getNombre()+ "/" +jugador.getFinT().toString());
         writer.flush();
     }
 
     public void finalizarJuego(boolean isWinner, String tiempo) {
+        jugador.setFinT(LocalDate.now());
+        jugador.setTiempo(tiempo);
         if (isWinner) {
+            
+            
             Label labelGameOver = new Label("¡Winner! en " + tiempo);
-            writeWinner(tiempo);
+            writeWinner();
             labelGameOver.setFont(new Font("Bauhaus 93", 32));
             labelGameOver.setTextFill(Paint.valueOf("BLACK"));
             labelGameOver.setBackground(new Background(new BackgroundImage(new Image("images/gamOver.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -910,7 +915,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 Logger.getLogger(FXMLJuegoBuscaminasController.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            writeWinner(tiempo);
+            writeWinner();
             Label labelGameOver = new Label("Game Over en " + tiempo);
             labelGameOver.setFont(new Font("Bauhaus 93", 32));
             labelGameOver.setTextFill(Paint.valueOf("BLACK"));
