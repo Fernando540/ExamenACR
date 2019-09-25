@@ -5,7 +5,10 @@
  */
 package buscaminas;
 
-import java.util.Date;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.time.LocalDate;
 
 /**
  *
@@ -14,26 +17,30 @@ import java.util.Date;
 public class Usuario {
     private String nombre;
     private String dificultad;
-    private Date inicioT;
-    private Date finT;
+    private String tiempo;
+    private String fechaFin;
+    private LocalDate inicioT;
+    private LocalDate finT;
     private int isWinner;
+    private Socket cl;
+    private BufferedReader br;
+    private PrintWriter writer;
 
-    public Usuario(String nombre, String dificultad, Date inicioT, Date finT, int isWinner) {
+    public Usuario(String tiempo, String nombre, String fecha) {
+        this.nombre = nombre;
+        this.fechaFin = fecha;
+        this.tiempo = tiempo;
+    }
+
+    public Usuario(String nombre, String dificultad, LocalDate inicioT, Socket cl, BufferedReader br, PrintWriter writer) {
         this.nombre = nombre;
         this.dificultad = dificultad;
         this.inicioT = inicioT;
-        this.finT = finT;
-        this.isWinner = isWinner;
-    }
-
-    public Usuario(String nombre, String dificultad, Date inicioT) {
-        this.nombre = nombre;
-        this.dificultad = dificultad;
-        this.inicioT = inicioT;
+        this.cl = cl;
+        this.br = br;
+        this.writer = writer;
     }
     
-    
-
     public String getNombre() {
         return nombre;
     }
@@ -50,19 +57,19 @@ public class Usuario {
         this.dificultad = dificultad;
     }
 
-    public Date getInicioT() {
+    public LocalDate getInicioT() {
         return inicioT;
     }
 
-    public void setInicioT(Date inicioT) {
+    public void setInicioT(LocalDate inicioT) {
         this.inicioT = inicioT;
     }
 
-    public Date getFinT() {
+    public LocalDate getFinT() {
         return finT;
     }
 
-    public void setFinT(Date finT) {
+    public void setFinT(LocalDate finT) {
         this.finT = finT;
     }
 
@@ -74,6 +81,25 @@ public class Usuario {
         this.isWinner = isWinner;
     }
     
+    public Socket getSocket() {
+        return cl;
+    }
+    public BufferedReader getBr() {
+        return br;
+    }
+    public PrintWriter getWriter() {
+        return writer;
+    } 
+        
+    public String getTiempo() {
+        return this.tiempo;
+    }
     
+    public void setTiempo(String tiempo) {
+        this.tiempo = tiempo;
+    }
     
+    public String getFechaFin() {
+        return this.fechaFin;
+    }
 }

@@ -60,9 +60,86 @@ def creaTablero(f,c):
 
 	return arr
 
+def mandaTablero():
+	data = ss.recv(1024)
+	print(data)
+	msg = data.decode("utf-8")
+	#print(f"Dificultad: {msg}")
+	if(msg=="1"):
+		print("Principiante")
+		tablero=creaTablero(9,9)
+	else:
+		if(msg=="2"):
+			print("Intermedio")
+			tablero=creaTablero(16,16)
+		else:
+			print("Avanzado")
+			tablero=creaTablero(16,30)
+
+	print("Enviando arreglo...")
+	for i in range(len(tablero)):
+		for j in range(len(tablero[0])):
+			ss.send(bytes(str(tablero[i][j])+'\n',"utf-8"))
+
+	print("Done...")
+
+def saveWinner():
+	print("Guardando score...")
+	data = ss.recv(1024)
+	print(data)
+	msg = data.decode("utf-8")
+	if(msg[0]=='1'):
+		file = open('Principiantes.txt', 'a')
+		print("Abri princi")
+	else:
+		if(msg[0]=='2'):
+			file = open('Intermedios.txt', 'a')
+			print("Abri inter")
+		else:
+			file = open('Expertos.txt', 'a')
+			print("Abri exp")
+
+	newStr=msg[1:]
+	print(f"nueva cadena: {newStr}")
+	file.write(newStr+'\n')
+	file.close()
+	print("Done!")
+
+
+def mandaScoreboard():
+	print("Mandando resultados de ",end=' ')
+	data = ss.recv(1024)
+	print(data)
+	msg = data.decode("utf-8")
+	if(msg=="1"):
+		f = open('Principiantes.txt', 'r')
+		print("principiantes...")
+	else:
+		if(msg[0]=="2"):
+			f = open('Intermedios.txt', 'r')
+			print("intermedios...")
+		else:
+			f = open('Expertos.txt', 'r')
+			print("expertos...")
+	for line in f: 
+		ss.send(bytes(line,"utf-8"))
+	ss.send(bytes("-1"+'\n',"utf-8"))
+	f.close()
+	print("Done!")
 
 
 #---------------------------------------------------------------------------------
+switcher = {
+	"0": mandaTablero,
+	"1": mandaScoreboard,
+	"2": saveWinner
+}
+
+def opciones(argument):
+	func = switcher.get(argument, "Errorts")
+	return func()
+
+
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 1234  		# Port to listen on (non-privileged ports are > 1023)
 
@@ -84,35 +161,17 @@ f.close()
 while True:
 	ss, address = s.accept()
 	print(f"Conexión desde {address} se ha establecido!")
-	#ss.send(bytes("HOLA QUE TAL!"+'\n',"utf-8"))
-	#cadena = input("Escribe algo para enviar ('q' para salir)\n")
-	data = ss.recv(1024)
-	if not data:
-		break
-	print(data)
-	#num, = struct.unpack('<i',data)
-	#print(num)
-	msg = data.decode("utf-8")
-	print(f"Se recibió: {msg}")
-	#ss.send(bytes(msg+'\n',"utf-8"))
-
-	if(msg=="1"):
-		print("Principiante")
-		tablero=creaTablero(9,9)
-	else:
-		if(msg=="2"):
-			print("Intermedio")
-			tablero=creaTablero(16,16)
-		else:
-			print("Avanzado")
-			tablero=creaTablero(16,30)
 	
-	print("Enviando arreglo...")
-	for i in range(len(tablero)):
-		for j in range(len(tablero[0])):
-			ss.send(bytes(str(tablero[i][j])+'\n',"utf-8"))
-
-	print("OK!")
+	while True:
+		print("Esperando instrucción...")
+		datos = ss.recv(1024)
+		print(datos)
+		opt = datos.decode("utf-8")
+		if(opt=="-1"):
+			break
+		else:
+			print(f"Ejecutando opción: {opt}")
+			opciones(opt)
 	
 	
 	"""
