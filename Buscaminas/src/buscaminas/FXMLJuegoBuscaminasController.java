@@ -227,7 +227,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                                     Alert alert = new Alert(AlertType.INFORMATION);
                                     alert.setTitle("Resultado");
                                     alert.setHeaderText("Suerte para la próxima. A continuación se muestra tu resultado");
-                                    alert.setContentText("Eres una basura :v\nTu tiempo fue de: " + time);
+                                    alert.setContentText("Tiempo de juego: " + time);
                                     alert.showAndWait();
                                     finalizarJuego(false, tiempoParo);
                                 } else if (event.getButton() == MouseButton.SECONDARY) {
@@ -1045,7 +1045,7 @@ public class FXMLJuegoBuscaminasController implements Initializable {
                 Logger.getLogger(FXMLJuegoBuscaminasController.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            writeWinner();
+            //writeWinner();
             Label labelGameOver = new Label("Game Over en " + tiempo);
             labelGameOver.setFont(new Font("Bauhaus 93", 32));
             labelGameOver.setTextFill(Paint.valueOf("BLACK"));

@@ -155,13 +155,13 @@ public class FXMLDocumentController implements Initializable {
                 String in;
                 while (seguir) {
                     in = br.readLine();
-                    if (in.equals("-1")) {
+                    if (in.equals("-1") || in.isEmpty()) {
                         seguir = false;
                     } else {
                         String[] splitted = in.split("/");
-                        System.out.println(splitted[0]);
+                        /*System.out.println(splitted[0]);
                         System.out.println(splitted[1]);
-                        System.out.println(splitted[2]);
+                        System.out.println(splitted[2]);*/
                         records.addWinner(new Usuario(splitted[0],splitted[1],splitted[2]));
                         /*for (String celda : splitted) {
                         System.out.println(celda);
